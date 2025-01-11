@@ -1,0 +1,12 @@
+.border-form{
+    padding: 2rem;
+    border-radius: 25px 0;
+    border: solid black 2px;
+}
+
+.error{
+    border: solid rgb(255, 0, 0) 2px !important;
+}
+input:focus.error {
+    box-shadow: 0 0 10px rgb(255, 0, 0) !important;
+}

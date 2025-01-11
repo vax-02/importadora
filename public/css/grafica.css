@@ -1,0 +1,61 @@
+.bg-first{
+    background-color: #28a746a9;
+    border: 2px solid #28a745;
+    border-radius: 25px;
+    height: 60px;
+    transition: background-color 0.5s ease, height 0.5s ease;
+}
+
+.bg-second{
+    background-color: #ffc10772;
+    border: 2px solid #ffc107;
+    border-radius: 25px;
+    height: 55px;
+    transition: background-color 0.5s ease, height 0.5s ease;
+
+}
+
+.bg-third{
+    background-color: #cd803285;
+    border: 2px solid #cd7f32;
+    border-radius: 25px;
+    height: 50px;
+    transition: background-color 0.5s ease, height 0.5s ease;
+}
+
+.bg-first:hover{
+    background-color: #28a745;
+    cursor: pointer;
+    height: 80px;
+}
+.bg-second:hover{
+    background-color: #ffc107;
+    cursor: pointer;
+    height: 80px;
+}
+
+.bg-third:hover{
+    background-color: #ffc107;
+    cursor: pointer;
+    height: 80px;
+}
+
+.info-graf{
+    background-color: #909a92;
+    padding: 5px;
+    border-radius: 10px;    
+    cursor: pointer;
+    transition: background-color 0.5s ease;
+}
+.info-graf:hover{
+    background-color: #000000;
+    
+}
+
+.title-graf{
+    border-bottom: 1px solid #000000;
+}
+.opcionVendedores{
+    background-color: #00000018;
+    border-radius: 25px;
+}

@@ -1,0 +1,18 @@
+.title-sucursal{
+    border-bottom: 2px solid black;
+    padding: 0.5rem;
+    background: rgba(5, 152, 25, 0.147)
+}
+.sub-sucursal{
+    font-weight: bold;
+}
+
+.info-sucursal{
+    border-bottom: 2px solid black;
+}
+.sub-title-sucursal{
+    border-bottom: 2px solid black;
+    padding: 0.2rem;
+    background: rgba(5, 152, 25, 0.147)
+}
+

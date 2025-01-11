@@ -1,0 +1,11 @@
+.img-log{
+    width: 100px;
+    margin-bottom: 15px;
+    border-bottom: 3px solid #000000;
+}
+.bg-login{
+    background-image: url('../img/back.jfif') ;
+    background-size: cover;
+    background-position: left;
+    position: absolute;
+}

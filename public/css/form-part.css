@@ -1,0 +1,14 @@
+.form-section {
+    display: none !important;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+
+}
+.form-section.active {
+    display: block !important;
+    opacity: 1;
+    transition: opacoity 0.5s ease;
+}
+.ocultar-columna{
+    display: none !important;
+}

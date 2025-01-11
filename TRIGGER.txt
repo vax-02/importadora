@@ -1,0 +1,63 @@
+DELIMITER $$
+
+CREATE TRIGGER reduce_stock_after_insert
+AFTER INSERT ON DETALLE_VENTA
+FOR EACH ROW
+BEGIN
+    DECLARE total_metros INT;
+    DECLARE rollos_disponibles INT;
+    DECLARE metros_por_rollo INT;
+
+    -- Obtener la cantidad total de metros vendidos
+    SET total_metros = NEW.CANTIDAD;
+
+    -- Obtener la información de la tela relacionada
+    SELECT METROS, PRECIO_METRO INTO @metros_disponibles, @precio_metro
+    FROM tela
+    WHERE CODTELA = NEW.CODTELA;
+
+    -- Reducir los metros en la tabla de tela
+    IF @metros_disponibles >= total_metros THEN
+        UPDATE tela
+        SET METROS = METROS - total_metros
+        WHERE CODTELA = NEW.CODTELA;
+    ELSE
+        -- Si no hay suficientes metros, reduce a 0 y calcula los rollos
+        SET total_metros = total_metros - @metros_disponibles;
+
+        UPDATE tela
+        SET METROS = 0
+        WHERE CODTELA = NEW.CODTELA;
+
+        -- Obtener información de rollos
+        SELECT NUMROLLOS, METROLLO INTO rollos_disponibles, metros_por_rollo
+        FROM rollo_tela
+        WHERE CODTELA = NEW.CODTELA AND CODCOLOR = NEW.CODCOLOR;
+
+        -- Reducir rollos si es necesario
+        WHILE total_metros > 0 DO
+            IF rollos_disponibles > 0 THEN
+                IF total_metros >= metros_por_rollo THEN
+                    SET total_metros = total_metros - metros_por_rollo;
+                    SET rollos_disponibles = rollos_disponibles - 1;
+                ELSE
+                    -- Ajustar los metros del último rollo
+                    UPDATE rollo_tela
+                    SET METROLLO = METROLLO - total_metros
+                    WHERE CODTELA = NEW.CODTELA AND CODCOLOR = NEW.CODCOLOR LIMIT 1;
+                    SET total_metros = 0; -- Finalizar el ciclo
+                END IF;
+            ELSE
+                -- Si no hay más rollos, salir del ciclo
+                SET total_metros = 0;
+            END IF;
+        END WHILE;
+
+        -- Actualizar el número de rollos
+        UPDATE rollo_tela
+        SET NUMROLLOS = rollos_disponibles
+        WHERE CODTELA = NEW.CODTELA AND CODCOLOR = NEW.CODCOLOR;
+    END IF;
+END$$
+
+DELIMITER ;

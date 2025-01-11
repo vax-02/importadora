@@ -1,0 +1,318 @@
+:root{
+    --color-barra-lateral: rgb(240, 240, 240);
+    --color-text: rgb(0,0,0);
+    --color-text-menu: rgb(134,136,144);
+    --color-button: rgb(0,0,0);
+    --color-text-button: rgb(250,250,250);
+
+    --color-menu-hover:rgb(238,238,238);
+    --color-menu-hover-text: rgb(0,0,0);
+    --color-linea :rgb(120,103,100);
+
+    --color-circulo: rgb(0,0,0);
+    --color-fondo-switch:rgb(10,150,255);
+}
+.dark-mode{
+    --color-barra-lateral: rgb(44,45,49);
+    --color-text: rgb(255,255,255);
+    --color-text-menu: rgb(110,110,117);
+    --color-menu-hover:rgb(0,0,0);
+    --color-menu-hover-text: rgb(238,238,238);
+
+
+    --color-button: rgb(255,255,255);
+    --color-text-button: rgb(0,0,0);
+
+    --color-linea :rgb(71,70,100);
+
+    --color-circulo: rgb(255,255,255);
+    --color-fondo-switch:rgb(255,150,2);
+}
+
+
+
+*{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+body{
+    height: 100vh;
+    width: 100%;
+}
+
+
+.barra-lateral{
+    position: fixed;
+    /*Config para que sea responsivo*/
+    display: flex;
+    flex-direction: column ;
+    justify-content: space-between;
+    /*Termina aca*/
+
+    width: 250px;
+    height: 100%;
+    /*oculta lo que sobresale del contenedor*/
+    overflow: hidden;
+    padding: 20px 10px;
+    background-color: var(--color-barra-lateral);
+    transition: width 0.5s ease, background-color 0.5s ease, color 0.5s ease ;
+    border-right: 2px solid #000000;
+}
+
+.title-inicio{
+    background-color: var(--color-barra-lateral) !important;
+    margin: 0;
+    margin-bottom: 5px;
+    font-weight: bold;
+    padding: 6px;
+    border-bottom: 3px solid black;
+    transition: background-color 0.5s ease;
+}
+.title-inicio h2{
+    color: var(--color-text);
+}
+
+.mini-barra-lateral{
+    width: 80px;
+}
+.barra-lateral span{
+    width: 100px;
+    /*font-size: 18px;*/
+    white-space: nowrap;
+    text-align: left;
+    opacity: 1;
+    transition: opacity 0.5s ease, width 0.5s ease;
+}
+.barra-lateral span.oculto{
+    opacity: 0;
+    width: 0;
+}
+
+.barra-lateral .name-page{
+    width: 100%;
+    height: 45px;
+    display: flex;
+    margin-bottom: 40px;
+    align-items: center;
+    color: var(--color-text);
+}
+
+.barra-lateral .name-page i{
+    min-width: 50px;
+    font-size: 40px;
+}
+.barra-lateral .name-page i:hover{
+    cursor: pointer ;
+}
+.barra-lateral .name-page span{
+    font-size: 25px;
+    margin-left: 5px;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+.barra-lateral .name-page span.oculto{
+    opacity: 0;
+}
+.barra-lateral .button{
+    width: 100%;
+    height: 45px;
+    display: flex;
+    margin-bottom: 20px;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 10px;
+    background: var(--color-button);
+    color: var(--color-text-button);
+}
+
+.barra-lateral .button i{
+    min-width: 50px;
+    font-size: 25px;
+}
+
+/*SCROLL DEL MENU*/
+.barra-lateral .navegacion{
+    height: 100%;
+    overflow-y: auto; /*SE AGREGA UN SCROLL CUANDO SE EXCEDE EL TAM*/
+    overflow-x: hidden;
+}
+/*PERSONALIZACION DEL SCROLL*/
+.barra-lateral .navegacion::-webkit-scrollbar{
+    width: 5px;
+}
+.barra-lateral .navegacion::-webkit-scrollbar-thumb{
+    background-color: var(--color-button);
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.5s ease;
+}
+
+.barra-lateral .navegacion li{
+    list-style: none;
+    display: flex;
+    margin-bottom: 10px;
+}
+.barra-lateral .navegacion a{
+    width: 100%;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    border-radius:10px  ;
+    color: var(--color-text-menu);
+}
+.barra-lateral .navegacion a:hover{
+    cursor: pointer;
+    background-color: var(--color-menu-hover);
+    color: var(--color-menu-hover-text);
+}
+
+.barra-lateral .navegacion i{
+    text-align: center;
+    min-width: 50px;
+    /*font-size: 20px;*/
+}
+.barra-lateral .linea{
+    width: 100% ;
+    height: 3px;
+    background-color: var(--color-linea) ;
+}
+
+/*ICONO PARA EL MODO OSCURO*/
+.modo-oscuro{
+    border-radius: 10px;
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+
+    margin-bottom: 20px;
+}
+.modo-oscuro .info{
+    width: 150px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    color: var(--color-text-menu);
+
+    /*Se oculta cuando minimiza*/
+    overflow: hidden;
+}
+
+.modo-oscuro .info i{
+    width: 50px;
+    font-size: 20px;
+    text-align: center;
+}
+.modo-oscuro .switch{
+    min-width: 50px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.modo-oscuro .switch .base{
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 35px;
+    height: 20px;
+    background-color: var(--color-fondo-switch);
+    border-radius: 50px ;
+    transition: background-color 0.5s ease;
+}
+
+.modo-oscuro .switch .circulo{
+    position: absolute;
+    width: 17px;
+    height: 90%;
+    background-color: var(--color-circulo);
+    border-radius: 50%;
+    left: 2px;
+    transition: left 0.5s ease, background-color 0.5s ease;
+    
+}
+
+/*Mover el circulo del switch */
+.modo-oscuro .switch .circulo.prendido{
+    left: 15px;
+    transition: left 0.5s ease;
+}
+
+/*Seccion de usuarios*/
+.usuario{
+    width: 100%;
+    display: flex;
+}
+
+.usuario img{
+    width: 50px;
+    min-width: 50px;
+    border-radius: 25px;
+}
+
+.usuario .info-usuario{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--color-text);
+
+    overflow: hidden; /*oculta lo que sale de la caja*/
+}
+
+.usuario .info-usuario .name-email{
+    width: 100%;
+    display: flex;/*Todo en una linea a los contenedores*/
+    flex-direction: column; /*Pone en columna a las cajas */
+    margin-left: 10px;
+}
+
+.usuario .info-usuario .name-email .nombre{
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.usuario .info-usuario .name-email .email{
+    font-size: 13px;
+}
+.usuario .info-usuario i{
+    width: 20px ;
+}
+
+.content{
+    margin-left: 260px;
+    transition: margin-left 0.5s ease;
+}
+
+.content.min-content{
+    margin-left: 80px;
+    transition: margin-left 0.5s ease;
+}
+
+/*MEDIA QUERIES*/
+/*Si el alto es menor a cierto valor entonces se cambiara los margin*/
+.info-user{
+    border-radius: 15px;
+    border: 2px solid var(--color-button);
+    cursor: pointer;
+    padding: 5px;
+  }
+.info-user:hover{
+    background-color: var(--color-menu-hover);
+}
+#icon-app  img{
+    height: 45px;
+}
+#title-app small{
+    color: var(--color-text);
+    font-size: 16px;
+    margin-bottom: -10px;
+}
