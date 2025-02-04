@@ -126,7 +126,7 @@ if (!isset($_SESSION['rol'])) {
 
     <nav class="navegacion">
         <ul style="padding-left: 5px;">
-            <?php if ($_SESSION['rol'] == 2) { //SUPERVISOR  ?>
+            <?php if ($_SESSION['rol'] <= 2) { //SUPERVISOR  ?>
 
             <li>
                 <a href="/<?php echo APP_NAME; ?>/Sucursal/Inicio">

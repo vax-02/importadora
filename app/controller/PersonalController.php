@@ -23,6 +23,10 @@ class Personal extends Controller
         //print_r($model->view());
         $this->view('personal/form', $sucursal->view());
     }
+    public function formAdmin(){
+        $sucursal = $this->model('sucursal');
+        $this->view('personal/formAdmin', $sucursal->view());
+    }
     public function create()
     {
         $data = [
@@ -34,7 +38,7 @@ class Personal extends Controller
             'CONTRA' => md5($_POST['pass']),
             'CELULAR' => $_POST['cel'],
             'ESTADO' => 1,
-            'SUCURSAL' => $_POST['sucursal']
+            'SUCURSAL' => ($_POST['sucursal']== 0) ? null : $_POST['sucursal']
         ];
 
         $model = $this->model('Personal');

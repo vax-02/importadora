@@ -26,9 +26,7 @@ class PersonalModel extends DB
                 END AS SUCURSAL, ESTADO
                 
                 FROM personal p, sucursal s
-                WHERE ID != :id AND
-                P.CODSUCURSAL = S.CODSUCURSAL OR P.CODSUCURSAL = 0
-                ');
+                WHERE ID != :id');
             $temp->bindParam(':id', $_SESSION['id']);
             $temp->execute();
             return $temp->fetchAll(PDO::FETCH_ASSOC);
@@ -119,15 +117,13 @@ class PersonalModel extends DB
                 S.NOMBRE AS SUCURSAL, ESTADO
                 
                 FROM personal p, sucursal s
-                WHERE ID = :id AND
-                P.CODSUCURSAL = S.CODSUCURSAL
-                ');
-
+                WHERE ID = :id');
+    
             $temp->bindParam(':id', $id);
             $temp->execute();
             return $temp->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            echo $e->getMessage();
+            return $e->getMessage();
         }
     }
     public function getPersonaException($id)

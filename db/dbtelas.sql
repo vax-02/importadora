@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-01-2025 a las 04:10:27
+-- Tiempo de generación: 15-01-2025 a las 04:59:43
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.2.0
 
@@ -171,13 +171,6 @@ CREATE TABLE `encargado_sucursal` (
   `FIN` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `encargado_sucursal`
---
-
-INSERT INTO `encargado_sucursal` (`COD`, `CODSUCURSAL`, `IDPERSONAL`, `INICIO`, `FIN`) VALUES
-(38, 1, 1, '2024-12-30 19:28:13', NULL);
-
 -- --------------------------------------------------------
 
 --
@@ -194,10 +187,10 @@ CREATE TABLE `marca` (
 --
 
 INSERT INTO `marca` (`CODMARCA`, `DESCRIPCION`) VALUES
-(13, 'Robert Kaufman Fabrics'),
 (14, 'Hanes Fabrics'),
-(15, 'Sunbrella'),
-(16, 'Liberty Fabrics');
+(16, 'Liberty Fabrics'),
+(13, 'Robert Kaufman Fabrics'),
+(15, 'Sunbrella');
 
 -- --------------------------------------------------------
 
@@ -224,7 +217,7 @@ CREATE TABLE `personal` (
 --
 
 INSERT INTO `personal` (`ID`, `NOMBRE`, `PATERNO`, `MATERNO`, `USUARIO`, `CONTRA`, `CELULAR`, `ESTADO`, `CODCARGO`, `CODSUCURSAL`, `FECHAINICIO`) VALUES
-(1, 'Administrador', NULL, NULL, 'admin', '827ccb0eea8a706c4c34a16891f84e7b', 71234567, 1, '1', NULL, '2025-01-08 03:07:54');
+(1, 'Administrador', NULL, NULL, 'admin', '827ccb0eea8a706c4c34a16891f84e7b', 71234567, 1, '1', NULL, '2025-01-15 03:54:37');
 
 -- --------------------------------------------------------
 
@@ -242,7 +235,7 @@ CREATE TABLE `productos` (
 --
 
 INSERT INTO `productos` (`id`, `nombre`) VALUES
-(13, 'Algodon');
+(13, 'Algodonss');
 
 -- --------------------------------------------------------
 
@@ -397,7 +390,8 @@ ALTER TABLE `encargado_sucursal`
 -- Indices de la tabla `marca`
 --
 ALTER TABLE `marca`
-  ADD PRIMARY KEY (`CODMARCA`);
+  ADD PRIMARY KEY (`CODMARCA`),
+  ADD UNIQUE KEY `DESCRIPCION` (`DESCRIPCION`);
 
 --
 -- Indices de la tabla `personal`
@@ -405,19 +399,22 @@ ALTER TABLE `marca`
 ALTER TABLE `personal`
   ADD PRIMARY KEY (`ID`),
   ADD UNIQUE KEY `USUARIO` (`USUARIO`),
+  ADD UNIQUE KEY `unique_nombre_apellido` (`NOMBRE`,`PATERNO`,`MATERNO`),
   ADD KEY `personal_sucursal` (`CODSUCURSAL`);
 
 --
 -- Indices de la tabla `productos`
 --
 ALTER TABLE `productos`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nombre` (`nombre`);
 
 --
 -- Indices de la tabla `proveedor`
 --
 ALTER TABLE `proveedor`
-  ADD PRIMARY KEY (`CODPROV`);
+  ADD PRIMARY KEY (`CODPROV`),
+  ADD UNIQUE KEY `NOMBRE` (`NOMBRE`);
 
 --
 -- Indices de la tabla `rollo_tela`
@@ -431,6 +428,7 @@ ALTER TABLE `rollo_tela`
 --
 ALTER TABLE `sucursal`
   ADD PRIMARY KEY (`CODSUCURSAL`),
+  ADD UNIQUE KEY `NOMBRE` (`NOMBRE`),
   ADD KEY `sucursal_encar` (`ENCARGADO`);
 
 --
@@ -491,19 +489,19 @@ ALTER TABLE `detalle_venta`
 -- AUTO_INCREMENT de la tabla `encargado_sucursal`
 --
 ALTER TABLE `encargado_sucursal`
-  MODIFY `COD` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `COD` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT de la tabla `marca`
 --
 ALTER TABLE `marca`
-  MODIFY `CODMARCA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `CODMARCA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de la tabla `personal`
 --
 ALTER TABLE `personal`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`

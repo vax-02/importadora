@@ -166,17 +166,21 @@ class Sucursal extends Controller
     public function supervisar(){
         session_start();
         $model = $this->model('Sucursal');
-
-        $this->view('sucursal/supervisar', $model->getSucursalOfSupervisor($_SESSION['id']));
-        
+        if($_SESSION['rol']==1){
+            $this->view('sucursal/supervisar', $model->view());
+        }else{
+            $this->view('sucursal/supervisar', $model->getSucursalOfSupervisor($_SESSION['id']));
+        }
     }
     public function selectSucursal(){
         session_start();
         $_SESSION['cod_sucursal'] = $_POST['idS'];
         $model = $this->model('Sucursal');
-
-        $this->view('sucursal/supervisar', $model->getSucursalOfSupervisor($_SESSION['id']));
-        
+        if($_SESSION['rol']==1){
+            $this->view('sucursal/supervisar', $model->view());
+        }else{
+            $this->view('sucursal/supervisar', $model->getSucursalOfSupervisor($_SESSION['id']));
+        }
     }
 }
 ?>

@@ -7,14 +7,14 @@ include_once '../app/view/nav/superior.php';
 <div class="container-fluid">
     <h4 class="text-left mt-3">
         <a href="/<?php echo APP_NAME;?>/Personal" class="text-secondary">
-            Personal
+            Admin
         </a>
         > Agregar
     </h4>
     <div class="row justify-content-center align-items-center  text-center" style="min-height: 70vh;">
         <div class="col-10">
             <form action="/<?php echo APP_NAME; ?>/personal/create" method="POST" class="border-form">
-                <h3 class="mb-3">Nuevo personal</h3>
+                <h3 class="mb-3">Nuevo Administrador</h3>
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4">
@@ -56,41 +56,25 @@ include_once '../app/view/nav/superior.php';
                             <small id="error_pass" class="form-text text-danger"></small>
                         </div>
                     </div>
-                    <div class="row mt-3 justify-content-center align-items-center">
-                        <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4">
-                            <label for="">Cargo</label>
-                            <select class="form-control" name="rol" id="" required>
-                                <option value="3">Vendedor</option>
-                            </select>
-                            <small class="form-text text-muted">Seleccione un cargo</small>
-                        </div>
+                    <input type="hidden" name="rol" value="1">
+                    <input type="hidden" name="sucursal" value="0">
+                </div>
 
-                        <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4">
-                            <label for="">Sucursal</label>
-                            <select class="form-control" name="sucursal" id="" required>
-                                <?php foreach($datos as $row) {?>
-                                <option value="<?php echo $row['CODSUCURSAL'] ?>"><?php echo $row['NOMBRE'] ?></option>
-                                <?php } ?>
-                            </select>
-                            <small class="form-text text-muted">Seleccione sucursal</small>
-                        </div>
-                    </div>
-
-                    <div class="row mt-3 justify-content-center align-items-center">
-                        <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4">
-                            <div class="clearfix">
-                                <a href="/<?php echo APP_NAME.'/Personal'?>"
-                                    class="btn btn-primary mt-5 float-left">Volver</a>
-                                <input type="submit" value="Guardar" id="save" class="btn btn-success mt-5 float-right">
-                            </div>
+                <div class="row mt-3 justify-content-center align-items-center">
+                    <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4">
+                        <div class="clearfix">
+                            <a href="/<?php echo APP_NAME.'/Personal'?>"
+                                class="btn btn-primary mt-5 float-left">Volver</a>
+                            <input type="submit" value="Guardar" id="save" class="btn btn-success mt-5 float-right">
                         </div>
                     </div>
                 </div>
-
-            </form>
         </div>
 
+        </form>
     </div>
+
+</div>
 </div>
 
 <?php
