@@ -19,7 +19,7 @@ include_once '../app/view/nav/superior.php';
       $iter = ($iter > 2) ? 0 : $iter;
       ?>
 
-        <div class="col-3 <?php echo $colors[$iter++] ?> sucursales text-left border border-light p-2 text-white m-2 "
+        <div class="col-sm-10 col-md-5 col-lg-5 <?php echo $colors[$iter++] ?> sucursales text-left border border-light p-2 text-white m-2 "
             style="height: 50vh;">
             <form action="/<?php echo APP_NAME; ?>/Sucursal/selectSucursal" method="POST">
                 <div class="row">
@@ -92,7 +92,6 @@ include_once '../app/view/nav/superior.php';
 
             })
         })
-        
     </script>
 
     <?php

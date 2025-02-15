@@ -5,6 +5,7 @@ class Personal extends Controller
     {
         session_start();
         $model = $this->model('Personal');
+
         switch ($_SESSION['rol']) {
             case 1:
                 $this->view('personal/personal', $model->view());
@@ -29,6 +30,7 @@ class Personal extends Controller
     }
     public function create()
     {
+        session_start();
         $data = [
             'CARGO' => $_POST['rol'],
             'NOMBRE' => $_POST['nombre'],
@@ -38,7 +40,7 @@ class Personal extends Controller
             'CONTRA' => md5($_POST['pass']),
             'CELULAR' => $_POST['cel'],
             'ESTADO' => 1,
-            'SUCURSAL' => ($_POST['sucursal']== 0) ? null : $_POST['sucursal']
+            'SUCURSAL' => ($_POST['sucursal'] == 0) ? $_SESSION['cod_sucursal'] : $_POST['sucursal']
         ];
 
         $model = $this->model('Personal');
@@ -70,7 +72,6 @@ class Personal extends Controller
     public function update()
     {
         $datos = $this->model('Personal')->getPersona($_GET['id']);
-
         $cargos = [
             '1' => 'Administrador',
             '3' => 'Vendedor'

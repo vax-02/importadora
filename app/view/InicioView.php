@@ -21,7 +21,7 @@ include_once '../app/view/nav/superior.php';
         }
         foreach ($datos as $row) {
             ?>
-        <div class="col-3 p-2 border b-3 text-left m-1 recuadro">
+        <div class="col-sm-10 col-md-5 col-lg-5 p-2 border b-3 text-left m-1 recuadro">
             <h2 class="">
                 <?php echo ucwords($row['NOMBRE']) ?>
             </h2>

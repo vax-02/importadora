@@ -74,12 +74,11 @@ include_once '../app/view/nav/superior.php';
                         <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4">
                             <label for="">Sucursal</label>
 
-                            <select class="form-control" name="sucursal" id="" required>
+                            <select class="form-control" name="sucursal" >
                                 <option value="<?php echo $datos['CODSUCURSAL'] ?>"><?php echo $datos['SUCURSAL'] ?>
                                 </option>
                                 <?php foreach($datos2 as $row) {?>
-                                <option value="<?php echo $row['CODSUCURSAL'] ?>"> <?php echo $row['NOMBRE'] ?></option>
-
+                                    <option value="<?php echo $row['CODSUCURSAL'] ?>"> <?php echo $row['NOMBRE'] ?></option>
                                 <?php } ?>
                             </select>
                             <small class="form-text text-muted">Seleccione sucursal</small>

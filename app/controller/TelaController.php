@@ -20,11 +20,10 @@ class Tela extends Controller
 
     public function create()
     {        
-        /*
         session_start();
+
         $model = $this->model('Personal');
         $personal = $model->getSucursalPersona($_SESSION['id']);
-
         $model = $this->model('Tela');
         $data = [
             'NOMBRE' => $_POST['nombre'],
@@ -40,7 +39,6 @@ class Tela extends Controller
             'SUCURSAL' => $personal['CODSUCURSAL'],
             'TCOLORES' => $_POST['tcolores']
         ];
-
         
 
         for ($i = 0; $i < $_POST['tcolores']; $i++) {
@@ -53,7 +51,6 @@ class Tela extends Controller
         } else {
             header('Location: /' . APP_NAME . '/Tela/form');
         }
-            */
     }
 
 
