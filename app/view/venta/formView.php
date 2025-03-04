@@ -2,10 +2,7 @@
 $title = 'Venta | Telas';
 include_once '../app/view/template/header.php';
 include_once '../app/view/nav/superior.php';
-
-
 include_once '../app/view/template/formModalCliente.php';
-
 ?>
 <!--MODALS-->
 <div class="modal fade" id="showInfo" tabindex="-1" aria-labelledby="showInfo" aria-hidden="true">
@@ -47,7 +44,7 @@ include_once '../app/view/template/formModalCliente.php';
                 <div class="container">
                     <div class="row text-center">
                         <h1 class="modal-title fs-5" id="exampleModalLabel">
-                            Detalle de la tela
+                            Detalle de la tela 
                         </h1>
                     </div>
                 </div>

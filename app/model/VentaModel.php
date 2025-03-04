@@ -176,6 +176,7 @@ class VentaModel extends DB
             (SELECT NOMBRE FROM SUCURSAL WHERE CODSUCURSAL = V.CODSUCURSAL) AS CODSUCURSAL,
 
             (SELECT RAZONSOCIAL FROM CLIENTE WHERE IDCLIENTE = V.CODCLIENTE) AS CLIENTE
+            
             FROM VENTA V WHERE
             CODVENTA = :CODV ');
             $temp->bindParam(':CODV', $id);

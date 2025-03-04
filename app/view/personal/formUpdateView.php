@@ -2,6 +2,7 @@
 $title = 'Personal | Modificar';
 include_once '../app/view/template/header.php';
 include_once '../app/view/nav/superior.php';
+
 ?>
 
 <div class="container-fluid">
@@ -65,10 +66,11 @@ include_once '../app/view/nav/superior.php';
 
                                 <?php } ?>
                             </select>
-                            <small class="form-text text-muted">Seleccione un cargo</small>
                         </div>
 
                     </div>
+                    <?php if($datos['CODCARGO'] != 2){ ?>
+
                     <div class="row mt-3 justify-content-center align-items-center">
 
                         <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4">
@@ -84,7 +86,12 @@ include_once '../app/view/nav/superior.php';
                             <small class="form-text text-muted">Seleccione sucursal</small>
                         </div>
                     </div>
-
+                    <?php
+                    }else{ ?>
+                        <input type="hidden" value="<?php echo $datos['CODSUCURSAL'] ?>" name="sucursal">
+                    <?php
+                    } ?>
+                    
                     <div class="row mt-3 justify-content-center align-items-center">
                         <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4">
                             <div class="clearfix">

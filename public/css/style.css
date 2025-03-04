@@ -5,7 +5,7 @@
     --color-button: rgb(0,0,0);
     --color-text-button: rgb(250,250,250);
 
-    --color-menu-hover:rgb(238,238,238);
+    --color-menu-hover:rgb(182, 182, 182);
     --color-menu-hover-text: rgb(0,0,0);
     --color-linea :rgb(120,103,100);
 
@@ -43,7 +43,13 @@ body{
     width: 100%;
 }
 
-
+.option-select {
+    background-color: var(--color-menu-hover);
+    border-radius: 10px;
+}
+.option-select a span {
+    color: white;
+}
 .barra-lateral{
     position: fixed;
     /*Config para que sea responsivo*/

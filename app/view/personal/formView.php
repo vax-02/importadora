@@ -62,7 +62,6 @@ include_once '../app/view/nav/superior.php';
                             <select class="form-control" name="rol" id="" required>
                                 <option value="3">Vendedor</option>
                             </select>
-                            <small class="form-text text-muted">Seleccione un cargo</small>
                         </div>
 
                         <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4">
@@ -72,7 +71,6 @@ include_once '../app/view/nav/superior.php';
                                 <option value="<?php echo $row['CODSUCURSAL'] ?>"><?php echo $row['NOMBRE'] ?></option>
                                 <?php } ?>
                             </select>
-                            <small class="form-text text-muted">Seleccione sucursal</small>
                         </div>
                     </div>
 

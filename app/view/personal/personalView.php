@@ -50,6 +50,7 @@ include_once '../app/view/nav/superior.php';
         foreach ($datos as $row) {
         ?>
                     <tr>
+
                         <th scope="row"> <?php echo $iter++ ?> </th>
                         <td> <?php echo $row['NOMBRE'] ?> </td>
                         <td> <?php echo $row['USUARIO'] ?> </td>

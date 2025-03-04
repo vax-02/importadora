@@ -5,7 +5,7 @@ include_once '../app/view/nav/superior.php';
 ?>
 <div class="container-fluid text-center">
     <div class="title-inicio mx-0">
-        <h2 class="">Panel del Supervisor</h2>
+        <h2 class="">Panel de Supervisión</h2>
     </div>
     <div class="row justify-content-center align-items-center" style="min-height: 70vh;">
         <?php
@@ -29,6 +29,8 @@ include_once '../app/view/nav/superior.php';
                         </h3>
                     </div>
                     <input type="hidden" name="idS" id="idS" value="<?php echo $sucursal['CODSUCURSAL'] ?>">
+                    <input type="hidden" name="nombre" value="<?php echo $sucursal['NOMBRE'] ?>">
+
                     <button type="submit" class="col-3 justify-content-center align-items-center btn-sucursal text-white
                 
             <?php if ($_SESSION['cod_sucursal'] == $sucursal['CODSUCURSAL']) {

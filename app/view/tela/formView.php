@@ -13,7 +13,7 @@ include_once '../app/view/nav/superior.php';
     </h4>
     <div class="row justify-content-center align-items-center  text-center" style="min-height: 70vh;">
         <div class="col-10">
-            <form action="/<?php echo APP_NAME; ?>/tela/create" method="POST" class="border-form" id="formTela">
+            <form action="/<?php echo APP_NAME; ?>/tela/create" method="POST" class="border-form mb-4" id="formTela">
                 <div class="container-fluid">
                     <div class="form-section active" id="seccion1">
                         <h3>Información de la Tela</h3>
@@ -27,9 +27,6 @@ include_once '../app/view/nav/superior.php';
                                     <?php
                                 } ?>
                                 </select>
-
-                                <!--input type="text" class="form-control" id="nameTela" name="nombre" required>
-                                <small id="error_name_tela" class="form-text text-danger"></small-->
                             </div>
 
                             <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4">
@@ -54,28 +51,58 @@ include_once '../app/view/nav/superior.php';
                             </div>
                         </div>
 
-                        <div class="row mt-3 justify-content-center align-items-center">
-                            <div class="col-6" style="border-bottom: 2px solid black;">
+                        <div class="row mt-3 justify-content-center align-items-center ">
+                            <div class="container ">
                                 <label><b>Precio por rollo</b></label>
-                            </div>
-                            <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8 mt-3">
                                 <div class="row">
-                                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                                        <label for="">Ingr. precio real</label>
+                                    <div class="col-md-6 col-lg-6 col-sm-12">
+                                        <label for="">Ingr. precio real <b>(Bs.)</b> </label>
                                         <input type="number" class="form-control" name="pVentaRolloReal"
                                             id="precioRealRollo" min="0" required>
                                         <small id="error_precioRealRollo" class="form-text text-danger"></small>
                                     </div>
-                                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                                        <label for="">Ingr. precio de venta</label>
+                                    <div class="col-md-6 col-lg-6 col-sm-12">
+                                        <label for="">Ingr. precio de venta <b>(Bs.)</b></label>
                                         <input type="number" class="form-control" name="pVentaRollo"
                                             id="precioVentaRollo" required>
                                         <small class="form-text text-danger"></small>
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="container mt-2">
+                                <label><b>Metraje (m.)</b></label>
+                                <div class="row justify-content-center">
+                                    <div class="col-md-6 col-lg-6 col-sm-12">
+                                        <label for="">Metros por rollo</label>
+                                        <input type="number" name="metros" id="metroRollo" class="form-control">
+                                        <small id="error_metroRollo" class="form-text text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+                            <div class="container mt-2">
+                                <label><b>Precio metro</b></label>
+                                <div class="row">
+                                    <div class="col-md-6 col-lg-6 col-sm-12">
+                                        <label for="">Pecio real <b>(Bs.)</b></label>
+                                        <input type="number" name="precioMetroReal" id="precioMetroReal" class="form-control">
+                                        <small id="" class="form-text text-danger"></small>
+                                    </div>
+
+                                    <div class="col-md-6 col-lg-6 col-sm-12">
+                                        <label for="">Precio de venta <b>(Bs.)</b></label>
+                                        <input type="number" name="precioMetro" id="precioMetro" class="form-control">
+                                        <small id="error_precioMetro" class="form-text text-muted"></small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="row mt-3 justify-content-center align-items-center">
+
+
+
+                        <div class="row mt-1 justify-content-center align-items-center">
                             <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
                                 <div class="clearfix">
                                     <a href="/<?php echo APP_NAME . '/Tela' ?>"
@@ -128,45 +155,6 @@ include_once '../app/view/nav/superior.php';
 
                         </div>
 
-                        <div class="row mt-3 justify-content-center align-items-center">
-                            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                                <div class="clearfix">
-                                    <button class="btn btn-primary mt-5 float-left" type="button"
-                                        onclick="anteriorSeccion()" type="button">
-                                        <i class="fas fa-arrow-left"> Anterior</i>
-                                    </button>
-
-                                    <button id="btnSigforSAVE" class="btn btn-success mt-5 float-right" type="button"
-                                        onclick="sumarTelas()">
-                                        Siguiente <i class="fas fa-arrow-right"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-section" id="seccion3">
-                        <h3>Costo y metraje de la Tela</h3>
-                        <div class="row mt-3 justify-content-center align-items-center">
-                            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                                <label for="">Metros por rollo</label>
-                                <input type="number" name="metros" id="metroRollo" class="form-control">
-                                <small id="error_metroRollo" class="form-text text-danger"></small>
-                            </div>
-
-                            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                                <label for="">Precio por metro</label>
-                                <input type="number" name="precioMetro" id="precioMetro" class="form-control">
-                                <small id="error_precioMetro" class="form-text text-muted"></small>
-                            </div>
-
-                            <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4 mt-3">
-                                <label for="">Total número de rollos</label>
-                                <input type="number" name="totalr" id="totalRollos" class="form-control" readonly>
-                                <small class="form-text text-muted">#</small>
-                            </div>
-
-                        </div>
 
                         <div class="row mt-3 justify-content-center align-items-center">
                             <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">

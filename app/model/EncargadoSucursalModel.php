@@ -18,11 +18,14 @@
             }
         }
         public function create($data){
+            date_default_timezone_set('America/La_Paz');
+
             try{
                 $temp = $this->CONEX->connect->prepare('INSERT INTO ENCARGADO_SUCURSAL
-                (CODSUCURSAL, IDPERSONAL) VALUES (:CODSU, :IDPE)');
+                (CODSUCURSAL, IDPERSONAL, INICIO) VALUES (:CODSU, :IDPE,:INICIO)');
                 $temp->bindParam(':CODSU', $data['CODSUCURSAL']);
                 $temp->bindParam(':IDPE', $data['IDPERSONAL']);
+                $temp->bindParam(":INICIO",date('Y-m-d'));
                 $temp->execute();
                 return true;
             }catch(PDOException $e){

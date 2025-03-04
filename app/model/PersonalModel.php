@@ -26,7 +26,7 @@ class PersonalModel extends DB
                 END AS SUCURSAL, ESTADO
                 
                 FROM personal p, sucursal s
-                WHERE ID != :id');
+                WHERE ID != :id and p.codsucursal = s.codsucursal');
             $temp->bindParam(':id', $_SESSION['id']);
             $temp->execute();
             return $temp->fetchAll(PDO::FETCH_ASSOC);
@@ -117,7 +117,7 @@ class PersonalModel extends DB
                 S.NOMBRE AS SUCURSAL, ESTADO
                 
                 FROM personal p, sucursal s
-                WHERE ID = :id');
+                WHERE ID = :id and p.CODSUCURSAL = s.codsucursal');
     
             $temp->bindParam(':id', $id);
             $temp->execute();
@@ -192,6 +192,20 @@ class PersonalModel extends DB
         }
     }
 
+    public function setSucursal($id, $sucursal)
+    {
+        try {
+            $temp = $this->CONEX->connect->prepare('UPDATE Personal
+                SET CODSUCURSAL = :su
+                WHERE ID = :ID');
+            $temp->bindParam(':su', $sucursal);
+            $temp->bindParam(':ID', $id);
+            $temp->execute();
+
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
 
     public function cantPersonal()
     {

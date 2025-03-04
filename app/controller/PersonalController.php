@@ -13,7 +13,6 @@ class Personal extends Controller
             case 2:
                 $this->view('personal/personal', $model->viewMySucursal($_SESSION['cod_sucursal']));
                 break;
-            
         }
 
     }

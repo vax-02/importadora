@@ -4,6 +4,30 @@ session_start();
 if (!isset($_SESSION['rol'])) {
     header('Location: /' . APP_NAME . '/login');
 }
+
+function optionSelect($option){
+    $url = rtrim($_GET['url'],'/');
+    $url = filter_var($url, FILTER_SANITIZE_URL);
+    $url = explode('/', $url);
+    return strtolower( $url[0] ) == strtolower( $option);
+}
+function getUri(){
+    $url = rtrim($_GET['url'],'/');
+    $url = filter_var($url, FILTER_SANITIZE_URL);
+    $url = explode('/', $url);
+    return $url;
+}
+function optionSucursal(){
+    $uri = getUri();
+    if($uri[0] == 'Sucursal'){
+        if(isset($uri[1])){
+            if($uri[1] == 'Inicio' || $uri[1] == 'Supervisar' || $uri[1] == 'selectSucursal')
+                return false;
+        }
+        return true;
+    }
+    return false;
+}
 ?>
 
 <!-- Modal -->
@@ -118,20 +142,17 @@ if (!isset($_SESSION['rol'])) {
             </span>
         </div>
 
-        <button class="button" type="button" data-bs-toggle="modal" data-bs-target="#misucursal">
-            <i class="fas fa-store mx-3"></i>
-            <span>Mi Sucursal</span>
+        <button class="button">
+            <i class="fas fa-store "></i>
+            <span><?php echo $_SESSION['sucursal'] ?></span>
         </button>
     </div>
 
-    <nav class="navegacion">
+    <nav class="navegacion" id="navigation">
         <ul style="padding-left: 5px;">
-
-
-
             <?php if ($_SESSION['rol'] < 2) { //SUPERVISOR AND ADMIN  ?>
+            <li <?php echo optionSelect("inicio") ?  'class="option-select"':'' ?>>
 
-            <li>
                 <a href="/<?php echo APP_NAME; ?>/Inicio">
                     <i class="fas fa-home mx-3"></i>
                     <span>Inicio</span>
@@ -139,7 +160,7 @@ if (!isset($_SESSION['rol'])) {
 
             </li>
 
-            <li>
+            <li <?php echo optionSelect("informe") ?  'class="option-select"':'' ?>>
                 <a href="/<?php echo APP_NAME; ?>/Informe">
                     <i class="fa-solid fa-file-contract mx-3"></i>
 
@@ -147,27 +168,29 @@ if (!isset($_SESSION['rol'])) {
                 </a>
             </li>
 
-            <?php if ($_SESSION['rol'] <= 2) { //SUPERVISOR  ?>
+            <?php } ?>
 
-            <li>
+            <li <?php echo getUri()[1]=='Inicio' ?  'class="option-select"':'' ?>>
                 <a href="/<?php echo APP_NAME; ?>/Sucursal/Inicio">
                     <i class="fas fa-home mx-3"></i>
                     <span>Inicio sucursal</span>
                 </a>
             </li>
-            <li>
+
+
+            <?php  if ($_SESSION['rol'] <= 2) { //SUPERVISOR AND ADMIN  ?>
+            <li <?php echo getUri()[1]=='Supervisar' || getUri()[1]=='selectSucursal' ?  'class="option-select"':'' ?>>
                 <a href="/<?php echo APP_NAME; ?>/Sucursal/Supervisar">
                     <i class="fas fa-home mx-3"></i>
                     <span>Gestionar sucursal</span>
                 </a>
             </li>
-
             <?php } ?>
 
-            <?php }
-
+            <?php 
             if ($_SESSION['rol'] < 3) { ?>
-            <li>
+            <li <?php echo optionSelect("personal") ?  'class="option-select"':'' ?>>
+
                 <a href="/<?php echo APP_NAME; ?>/Personal">
                     <i class="fas fa-users mx-3"></i>
 
@@ -176,12 +199,7 @@ if (!isset($_SESSION['rol'])) {
             </li>
             <?php } ?>
 
-
-
-
-
-
-            <li>
+            <li <?php echo optionSelect("contrato") ?  'class="option-select"':'' ?>>
                 <a href="/<?php echo APP_NAME; ?>/Contrato">
                     <i class="fa-solid fa-file-contract mx-3"></i>
 
@@ -189,67 +207,59 @@ if (!isset($_SESSION['rol'])) {
                 </a>
             </li>
 
-
-
-            <li>
+            <li <?php echo optionSelect("venta") ?  'class="option-select"':'' ?>>
                 <a href="/<?php echo APP_NAME; ?>/Venta">
                     <i class="fa-solid fa-bag-shopping mx-3"></i>
-
                     <span>Venta</span>
                 </a>
             </li>
 
-            <li>
+            <li <?php echo optionSelect("cliente") ?  'class="option-select"':'' ?>>
                 <a href="/<?php echo APP_NAME; ?>/Cliente">
                     <i class="fas fa-user-friends mx-3"></i>
-
                     <span>Clientes</span>
                 </a>
             </li>
 
-
             <?php if ($_SESSION['rol'] < 2) { // ADMIN  ?>
-            <li>
+            <li <?php echo optionSucursal() ?  'class="option-select"':'' ?>>
                 <a href="/<?php echo APP_NAME; ?>/Sucursal">
-
                     <i class="fas fa-store mx-3"></i>
-
                     <span>Sucursales</span>
                 </a>
             </li>
-            <?php } ?>
-            <li>
+            <li <?php echo optionSelect("proveedor") ?  'class="option-select"':'' ?>>
                 <a href="/<?php echo APP_NAME; ?>/Proveedor">
                     <i class="fas fa-boxes mx-3"></i>
-
                     <span>Proveedores</span>
                 </a>
             </li>
-            <li>
+            <?php } ?>
 
+            <li <?php echo optionSelect("marca") ?  'class="option-select"':'' ?>>
                 <a href="/<?php echo APP_NAME; ?>/Marca">
                     <i class="fas fa-bookmark mx-3"></i>
-
                     <span>Marca</span>
                 </a>
             </li>
 
             <?php if ($_SESSION['rol'] < 3) { //Super y admin ?>
-            <li>
+            <li <?php echo optionSelect("compra") ?  'class="option-select"':'' ?>>
                 <a href="/<?php echo APP_NAME; ?>/Compra">
                     <i class="fas fa-bookmark mx-3"></i>
                     <span>Pedido</span>
                 </a>
             </li>
             <?php } ?>
-            <li>
+            <li <?php echo optionSelect("tela") ?  'class="option-select"':'' ?>>
                 <a href="/<?php echo APP_NAME; ?>/Tela">
                     <i class="fas fa-bookmark mx-3"></i>
                     <span>Telas (stock)</span>
                 </a>
+
             </li>
 
-            <li>
+            <li <?php echo optionSelect("Productos") ?  'class="option-select"':'' ?>>
                 <a href="/<?php echo APP_NAME; ?>/Productos">
                     <i class="fas fa-bookmark mx-3"></i>
                     <span>Productos</span>

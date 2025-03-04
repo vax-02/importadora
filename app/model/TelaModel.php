@@ -35,6 +35,36 @@ class TelaModel extends DB
             echo $e->getMessage();
         }
     }
+
+    public function viewForSucursal($codSucu)
+    {
+        try {
+
+            $temp = $this->CONEX->connect->prepare('SELECT
+                T.CODTELA, T.NOMBRE,
+                CASE 
+                    WHEN CALIDAD = 1 THEN \'1RA\'
+                    WHEN CALIDAD = 2 THEN \'2DA\'
+                    WHEN CALIDAD = 3 THEN \'3RA\'
+                    WHEN CALIDAD = 4 THEN \'4TA\'
+                END AS CALIDAD,
+                (
+                    SELECT SUM(NUMROLLOS) 
+                    FROM ROLLO_TELA
+                    WHERE CODTELA = T.CODTELA
+                ) AS ROLLOS,
+                M.DESCRIPCION AS MARCA, METROS, PRECIO, PRECIO_REAL
+                
+                FROM Tela T, MARCA M
+                WHERE T.CODMARCA = M.CODMARCA AND
+                T.CODSUCURSAL = :codsu');
+            $temp->bindParam(':codsu',$codSucu);
+            $temp->execute();
+            return $temp->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
     public function viewName()
     {
         try {
@@ -90,6 +120,7 @@ class TelaModel extends DB
         }
     }
     public function create($data)
+    
     {
         try {
             $temp = $this->CONEX->connect->prepare('INSERT INTO TELA
@@ -296,7 +327,11 @@ class TelaModel extends DB
                 (
                     SELECT METROLLO FROM ROLLO_TELA WHERE CODTELA = T.CODTELA AND
                     CODCOLOR = :color
-                ) as METROS, 
+                ) as METROS,
+                 (
+                    SELECT MROLLOCOMPLETO FROM ROLLO_TELA WHERE CODTELA = T.CODTELA AND
+                    CODCOLOR = :color
+                ) as MROLLOCOMPLETO, 
                 PRECIO, PRECIO_REAL
                 FROM Tela T, MARCA M
                 WHERE T.CODMARCA = M.CODMARCA AND
@@ -499,7 +534,24 @@ ORDER BY
         }
         return false;
     }
+    
+    public function revisarSiEstaVacio($id) {
+        try{
+            $temp = $this->CONEX->connect->prepare('SELECT NUMROLLOS,METROLLO, MROLLOCOMPLETO FROM ROLLO_TELA WHERE CODTELA = :ID');
+            $temp->bindParam(':ID',$id);
+            $temp->execute();
+            $data = $temp->fetch(PDO::FETCH_ASSOC);
+            if($data['METROLLO'] == 0.0 && $data['NUMROLLOS'] > 0){
+                $temp = $this->CONEX->connect->prepare('UPDATE ROLLO_TELA SET METROLLO = :RC WHERE CODTELA = :ID');
+                $temp->bindParam(':ID',$id);
+                $temp->bindParam(':RC',$data['MROLLOCOMPLETO']);
+                $temp->execute();
+            }
+        } catch (PDOException $e) {
+        }
+    }
 
+    
     public function updateRollos($data) {
         try {
             $temp = $this->CONEX->connect->prepare('UPDATE ROLLO_TELA
@@ -520,7 +572,6 @@ ORDER BY
                 
                 //print_r($VALIDAR->fetch());
                 if ($VALIDAR->rowCount() == 0){
-                    echo 'noha';
                     $base = $this->CONEX->connect->prepare('SELECT * FROM ROLLO_TELA WHERE CODTELA = :id LIMIT 1');
                     $base->bindParam(':id', $data['ID']);
                     $base->execute();

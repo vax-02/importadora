@@ -3,8 +3,9 @@ class Tela extends Controller
 {
     public function index()
     {
+        session_start();
         $model = $this->model('Tela');
-        $telas = $model->view();
+        $telas = $model->viewForSucursal($_SESSION['cod_sucursal']);
         foreach ($telas as &$row) {
             $row['colores'] = $model->getColors($row['CODTELA']);
         }
@@ -36,7 +37,7 @@ class Tela extends Controller
             'PRECIOMETRO' => $_POST['precioMetro'],
             'PRECIOMETROREAL' => (int) ($_POST['pVentaRollo'] / (int) $_POST['metros']),
             'TOTALR' => $_POST['totalr'],
-            'SUCURSAL' => $personal['CODSUCURSAL'],
+            'SUCURSAL' => ($_SESSION['rol']==1 or $_SESSION['rol']==2)? $_SESSION['cod_sucursal'] :$personal['CODSUCURSAL'],
             'TCOLORES' => $_POST['tcolores']
         ];
         
@@ -93,7 +94,6 @@ class Tela extends Controller
     }
     public function addStockSave(){
         $tela = $this->model('Tela');
-        print_r( $_POST);
 
         $tela->update(
             [
@@ -120,6 +120,8 @@ class Tela extends Controller
             ]
         );
 
+        print_r($_POST);
+        $tela->revisarSiEstaVacio($_POST['id']);
         header('Location: /' . APP_NAME . '/tela');
     }
 }

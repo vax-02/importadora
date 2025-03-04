@@ -34,24 +34,6 @@ function removeRow(button) {
     row.parentNode.removeChild(row);
 }
 
-function sumarTelas() {
-    let allRollos = 0;
-    let table = document
-        .getElementById("tableTelas")
-        .getElementsByTagName("tbody")[0];
-
-    const rows = table.getElementsByTagName("tr");
-
-    for (let i = 0; i < rows.length; i++) {
-        const cells = rows[i].getElementsByTagName("td");
-        const cell = cells[2];
-        allRollos += parseInt(cell.textContent);
-    }
-
-    const inputTotal = document.getElementById("totalRollos");
-    inputTotal.value = allRollos;
-    siguienteSeccion();
-}
 
 const precioRealRollo = document.getElementById("precioRealRollo");
 const metrosRollo = document.getElementById("metroRollo");

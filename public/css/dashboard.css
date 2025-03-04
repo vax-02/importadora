@@ -23,7 +23,7 @@
 
 
 .recuadro {
-    width: 280px !important;
+    /*width: 280px !important;*/
     height: 90px !important;
     overflow: hidden;
     background-color: #f0f0f0;
@@ -42,7 +42,8 @@
 .contenido-colors{
     min-height: 180px;
     max-height: 180px;
-    background-color:#ffffff ;
+    width: auto;
+    background-color:#ffff ;
     border-radius: 5%;
 
     border: 10px solid  rgba(65, 227, 208, 0.273);

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-01-2025 a las 04:59:43
+-- Tiempo de generación: 04-03-2025 a las 03:18:10
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.2.0
 
@@ -119,40 +119,103 @@ CREATE TABLE `detalle_venta` (
 -- Disparadores `detalle_venta`
 --
 DELIMITER $$
-CREATE TRIGGER `reduce_stock_after_insert` AFTER INSERT ON `detalle_venta` FOR EACH ROW BEGIN 
-    DECLARE METROS INT;
-    DECLARE ROLLO_NUEVO INT;
+CREATE TRIGGER `reduce_stock_after_insert` AFTER INSERT ON `detalle_venta` FOR EACH ROW BEGIN
+    DECLARE METROS DECIMAL(10,2);  -- Usamos DECIMAL para manejar fracciones
+    DECLARE ROLLO_NUEVO DECIMAL(10,2);  -- Usamos DECIMAL para manejar fracciones
     DECLARE AUX INT;
-    DECLARE SOBRANTE INT;
+    DECLARE SOBRANTE DECIMAL(10,2);  -- Usamos DECIMAL para manejar fracciones
     DECLARE NUM_ROLLOS INT;
-
+    DECLARE METRAJE_TOTAL  DECIMAL(10,1);
     -- Obtén los valores de la tabla ROLLO_TELA
-    SELECT METROLLO, MROLLOCOMPLETO, NUMROLLOS 
+    SELECT METROLLO, MROLLOCOMPLETO, NUMROLLOS
     INTO METROS, ROLLO_NUEVO, NUM_ROLLOS
     FROM ROLLO_TELA
     WHERE CODTELA = NEW.CODTELA AND CODCOLOR = NEW.CODCOLOR;
 
-    -- Si la cantidad a vender es menor o igual a la cantidad en metros
-    IF NEW.CANTIDAD < METROS THEN
-        UPDATE ROLLO_TELA
-        SET METROLLO = METROS - NEW.CANTIDAD
-        WHERE CODTELA = NEW.CODTELA AND CODCOLOR = NEW.CODCOLOR;
-    ELSEIF NEW.CANTIDAD = METROS AND  NUM_ROLLOS >= 1 THEN
-        UPDATE ROLLO_TELA
-        SET METROLLO = ROLLO_NUEVO, NUMROLLOS = NUM_ROLLOS - 1
-        WHERE CODTELA = NEW.CODTELA AND CODCOLOR = NEW.CODCOLOR;
-    -- Si la cantidad a vender es mayor que los metros y hay rollos disponibles
-    ELSEIF NEW.CANTIDAD > METROS AND NUM_ROLLOS >= 1 THEN
-        SET AUX = NEW.CANTIDAD / ROLLO_NUEVO;
-        SET SOBRANTE = NEW.CANTIDAD % ROLLO_NUEVO;
-        SET METROS = ROLLO_NUEVO - SOBRANTE;
-        SET NUM_ROLLOS = NUM_ROLLOS - AUX;
+    -- CASO 1: ROLLOS ABIERTOS
+    IF METROS < ROLLO_NUEVO THEN
+        -- Si la cantidad a vender es menor a la cantidad en metro
+        IF NEW.CANTIDAD < METROS THEN
+            UPDATE ROLLO_TELA
+            SET METROLLO = METROS - NEW.CANTIDAD
+            WHERE CODTELA = NEW.CODTELA AND CODCOLOR = NEW.CODCOLOR;
+        -- Si la cantidad a vender es igual que los metros 
+        ELSEIF NEW.CANTIDAD = METROS THEN
+            IF NUM_ROLLOS >= 1 THEN
+                UPDATE ROLLO_TELA
+                SET METROLLO = ROLLO_NUEVO
+                WHERE CODTELA = NEW.CODTELA AND CODCOLOR = NEW.CODCOLOR;
+            ELSE
+                UPDATE ROLLO_TELA
+                SET NUMROLLOS = 0,
+                METROLLO = 0
+                WHERE CODTELA = NEW.CODTELA AND CODCOLOR = NEW.CODCOLOR;
+            END IF;
+        -- Si la cantidad a vender es mayor que los metros y hay rollos disponibles
+        ELSEIF NEW.CANTIDAD > METROS THEN
+            SET METRAJE_TOTAL = ROLLO_NUEVO * NUM_ROLLOS + METROS;
+            IF METRAJE_TOTAL > NEW.CANTIDAD THEN -- SI VA HA SOBRAR TELA
+                SET METRAJE_TOTAL = METRAJE_TOTAL - NEW.CANTIDAD;
 
-        UPDATE ROLLO_TELA
-        SET METROLLO = METROS, NUMROLLOS = NUM_ROLLOS
-        WHERE CODCOLOR = NEW.CODCOLOR AND CODTELA = NEW.CODTELA;
+                SET NUM_ROLLOS = FLOOR(METRAJE_TOTAL/ROLLO_NUEVO);
+                SET METROS = (METRAJE_TOTAL%ROLLO_NUEVO);
+                IF METROS = 0 THEN
+                    UPDATE ROLLO_TELA
+                    SET NUMROLLOS = NUM_ROLLOS
+                    WHERE CODTELA = NEW.CODTELA AND CODCOLOR = NEW.CODCOLOR;
+                ELSE    
+                    UPDATE ROLLO_TELA
+                    SET METROLLO = METROS, NUMROLLOS = NUM_ROLLOS
+                    WHERE CODTELA = NEW.CODTELA AND CODCOLOR = NEW.CODCOLOR;
+                END IF;
+            ELSEIF METRAJE_TOTAL = NEW.CANTIDAD THEN -- SI SE LLEGA A VENDER TODO
+                    UPDATE ROLLO_TELA
+                    SET METROLLO = 0, NUMROLLOS = 0
+                    WHERE CODTELA = NEW.CODTELA AND CODCOLOR = NEW.CODCOLOR;
+            END IF;
+
+        END IF;
+    ELSE
+    -- CASO 2: ROLLOS CERRADOS
+        IF NEW.CANTIDAD < METROS THEN
+            UPDATE ROLLO_TELA
+            SET METROLLO = METROS - NEW.CANTIDAD,
+            NUMROLLOS = NUM_ROLLOS-1
+            WHERE CODTELA = NEW.CODTELA AND CODCOLOR = NEW.CODCOLOR;
+        ELSEIF NEW.CANTIDAD = METROS THEN
+            IF NUM_ROLLOS >= 1 THEN
+                UPDATE ROLLO_TELA
+                SET NUMROLLOS = NUM_ROLLOS - 1
+                WHERE CODTELA = NEW.CODTELA AND CODCOLOR = NEW.CODCOLOR;
+            ELSE
+                UPDATE ROLLO_TELA
+                SET NUMROLLOS = 0,
+                METROLLO = 0
+                WHERE CODTELA = NEW.CODTELA AND CODCOLOR = NEW.CODCOLOR;
+            END IF;
+        ELSEIF NEW.CANTIDAD > METROS THEN
+            SET METRAJE_TOTAL = ROLLO_NUEVO * NUM_ROLLOS;
+            IF METRAJE_TOTAL > NEW.CANTIDAD THEN
+                SET METRAJE_TOTAL = METRAJE_TOTAL - NEW.CANTIDAD;
+
+                SET NUM_ROLLOS = FLOOR(METRAJE_TOTAL/ROLLO_NUEVO);
+                SET METROS = (METRAJE_TOTAL%ROLLO_NUEVO);
+                IF METROS = 0 THEN
+                    UPDATE ROLLO_TELA
+                    SET NUMROLLOS = NUM_ROLLOS
+                    WHERE CODTELA = NEW.CODTELA AND CODCOLOR = NEW.CODCOLOR;
+                ELSE    
+                    UPDATE ROLLO_TELA
+                    SET METROLLO = METROS, NUMROLLOS = NUM_ROLLOS
+                    WHERE CODTELA = NEW.CODTELA AND CODCOLOR = NEW.CODCOLOR;
+                END IF;
+            ELSEIF METRAJE_TOTAL = NEW.CANTIDAD THEN -- SI SE LLEGA A VENDER TODO
+                    UPDATE ROLLO_TELA
+                    SET METROLLO = 0, NUMROLLOS = 0
+                    WHERE CODTELA = NEW.CODTELA AND CODCOLOR = NEW.CODCOLOR;
+            END IF;
+        END IF;
     END IF;
-
 END
 $$
 DELIMITER ;
@@ -167,7 +230,7 @@ CREATE TABLE `encargado_sucursal` (
   `COD` int(11) NOT NULL,
   `CODSUCURSAL` int(11) DEFAULT NULL,
   `IDPERSONAL` int(11) DEFAULT NULL,
-  `INICIO` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `INICIO` date DEFAULT NULL,
   `FIN` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -217,7 +280,7 @@ CREATE TABLE `personal` (
 --
 
 INSERT INTO `personal` (`ID`, `NOMBRE`, `PATERNO`, `MATERNO`, `USUARIO`, `CONTRA`, `CELULAR`, `ESTADO`, `CODCARGO`, `CODSUCURSAL`, `FECHAINICIO`) VALUES
-(1, 'Administrador', NULL, NULL, 'admin', '827ccb0eea8a706c4c34a16891f84e7b', 71234567, 1, '1', NULL, '2025-01-15 03:54:37');
+(1, 'Administrador', '.', '.', 'admin', '827ccb0eea8a706c4c34a16891f84e7b', 71234567, 1, '1', 1, '2025-03-04 02:17:53');
 
 -- --------------------------------------------------------
 
@@ -235,7 +298,7 @@ CREATE TABLE `productos` (
 --
 
 INSERT INTO `productos` (`id`, `nombre`) VALUES
-(13, 'Algodonss');
+(14, 'bonge');
 
 -- --------------------------------------------------------
 
@@ -268,7 +331,7 @@ CREATE TABLE `rollo_tela` (
   `CODTELA` int(11) NOT NULL,
   `CODCOLOR` varchar(15) NOT NULL,
   `NUMROLLOS` int(11) DEFAULT NULL,
-  `METROLLO` int(11) NOT NULL,
+  `METROLLO` decimal(11,1) NOT NULL,
   `MROLLOCOMPLETO` int(11) NOT NULL,
   `PRECIOROLLO` float DEFAULT NULL,
   `PRECIOROLLOREAL` float NOT NULL,
@@ -376,7 +439,9 @@ ALTER TABLE `detalle_contrato`
 -- Indices de la tabla `detalle_venta`
 --
 ALTER TABLE `detalle_venta`
-  ADD PRIMARY KEY (`CODDVENTA`);
+  ADD PRIMARY KEY (`CODDVENTA`),
+  ADD KEY `fk_cod_venta` (`CODVENTA`),
+  ADD KEY `fk_cod_tela` (`CODTELA`);
 
 --
 -- Indices de la tabla `encargado_sucursal`
@@ -443,7 +508,10 @@ ALTER TABLE `tela`
 -- Indices de la tabla `venta`
 --
 ALTER TABLE `venta`
-  ADD PRIMARY KEY (`CODVENTA`);
+  ADD PRIMARY KEY (`CODVENTA`),
+  ADD KEY `fk_cod_personal` (`IDPERSONAL`),
+  ADD KEY `fk_cod_cliente` (`CODCLIENTE`),
+  ADD KEY `fk_cod_sucursal` (`CODSUCURSAL`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -453,13 +521,13 @@ ALTER TABLE `venta`
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `IDCLIENTE` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=113;
+  MODIFY `IDCLIENTE` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=114;
 
 --
 -- AUTO_INCREMENT de la tabla `compra`
 --
 ALTER TABLE `compra`
-  MODIFY `CODCOMPRA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `CODCOMPRA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT de la tabla `contrato`
@@ -471,7 +539,7 @@ ALTER TABLE `contrato`
 -- AUTO_INCREMENT de la tabla `detalle_compra`
 --
 ALTER TABLE `detalle_compra`
-  MODIFY `coddcompra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `coddcompra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_contrato`
@@ -483,13 +551,13 @@ ALTER TABLE `detalle_contrato`
 -- AUTO_INCREMENT de la tabla `detalle_venta`
 --
 ALTER TABLE `detalle_venta`
-  MODIFY `CODDVENTA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
+  MODIFY `CODDVENTA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=114;
 
 --
 -- AUTO_INCREMENT de la tabla `encargado_sucursal`
 --
 ALTER TABLE `encargado_sucursal`
-  MODIFY `COD` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `COD` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT de la tabla `marca`
@@ -501,13 +569,13 @@ ALTER TABLE `marca`
 -- AUTO_INCREMENT de la tabla `personal`
 --
 ALTER TABLE `personal`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedor`
@@ -519,25 +587,25 @@ ALTER TABLE `proveedor`
 -- AUTO_INCREMENT de la tabla `rollo_tela`
 --
 ALTER TABLE `rollo_tela`
-  MODIFY `CODROLLO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=391;
+  MODIFY `CODROLLO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=399;
 
 --
 -- AUTO_INCREMENT de la tabla `sucursal`
 --
 ALTER TABLE `sucursal`
-  MODIFY `CODSUCURSAL` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `CODSUCURSAL` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT de la tabla `tela`
 --
 ALTER TABLE `tela`
-  MODIFY `CODTELA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `CODTELA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
 -- AUTO_INCREMENT de la tabla `venta`
 --
 ALTER TABLE `venta`
-  MODIFY `CODVENTA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
+  MODIFY `CODVENTA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=114;
 
 --
 -- Restricciones para tablas volcadas
@@ -572,6 +640,13 @@ ALTER TABLE `detalle_contrato`
   ADD CONSTRAINT `D_CONTRATO_CONTRATO` FOREIGN KEY (`CODCONTRATO`) REFERENCES `contrato` (`CODCONTRATO`);
 
 --
+-- Filtros para la tabla `detalle_venta`
+--
+ALTER TABLE `detalle_venta`
+  ADD CONSTRAINT `fk_cod_tela` FOREIGN KEY (`CODTELA`) REFERENCES `tela` (`CODTELA`),
+  ADD CONSTRAINT `fk_cod_venta` FOREIGN KEY (`CODVENTA`) REFERENCES `venta` (`CODVENTA`);
+
+--
 -- Filtros para la tabla `encargado_sucursal`
 --
 ALTER TABLE `encargado_sucursal`
@@ -602,6 +677,14 @@ ALTER TABLE `sucursal`
 ALTER TABLE `tela`
   ADD CONSTRAINT `tela_marca` FOREIGN KEY (`CODMARCA`) REFERENCES `marca` (`CODMARCA`),
   ADD CONSTRAINT `tela_sucursal` FOREIGN KEY (`CODSUCURSAL`) REFERENCES `sucursal` (`CODSUCURSAL`);
+
+--
+-- Filtros para la tabla `venta`
+--
+ALTER TABLE `venta`
+  ADD CONSTRAINT `fk_cod_cliente` FOREIGN KEY (`CODCLIENTE`) REFERENCES `cliente` (`IDCLIENTE`),
+  ADD CONSTRAINT `fk_cod_personal` FOREIGN KEY (`IDPERSONAL`) REFERENCES `personal` (`ID`),
+  ADD CONSTRAINT `fk_cod_sucursal` FOREIGN KEY (`CODSUCURSAL`) REFERENCES `sucursal` (`CODSUCURSAL`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

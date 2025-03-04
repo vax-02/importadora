@@ -45,6 +45,7 @@ class Sucursal extends Controller
             //modificar el rol del personal
             $model = $this->model('Personal');
             $model->setCargo($data['ENCARGADO'], 2); //Supervisor
+            $model->setSucursal($data['ENCARGADO'],$result);
             //Iniciar control de fecha EN ENCARGADO_SUCURSAL
             $model = $this->model('EncargadoSucursal');
             $model->create(
@@ -175,11 +176,13 @@ class Sucursal extends Controller
     public function selectSucursal(){
         session_start();
         $_SESSION['cod_sucursal'] = $_POST['idS'];
+        $_SESSION['sucursal'] = $_POST['nombre'];
+
         $model = $this->model('Sucursal');
         if($_SESSION['rol']==1){
-            $this->view('sucursal/supervisar', $model->view());
+          $this->view('sucursal/supervisar', $model->view());
         }else{
-            $this->view('sucursal/supervisar', $model->getSucursalOfSupervisor($_SESSION['id']));
+        $this->view('sucursal/supervisar', $model->getSucursalOfSupervisor($_SESSION['id']));
         }
     }
 }

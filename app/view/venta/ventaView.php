@@ -36,7 +36,7 @@ include_once '../app/view/nav/superior.php';
           <th scope="col">Vendedor</th>
           <th scope="col">Sucursal</th>
           <th scope="col">Detalle</th>
-          <th scope="col">Opciones</th>
+          <!--th scope="col">Opciones</th-->
         </tr>
       </thead>
       <tbody>
@@ -63,12 +63,13 @@ include_once '../app/view/nav/superior.php';
                 <i class="fas fa-pen"></i>
               </a>
             </td>
-            <td>
-              <a href="/<?php echo APP_NAME . '/Venta/delete?id=' . $row['CODVENTA'] ?>"
+            
+            <!--td>
+              <a href="/<?php //echo APP_NAME . '/Venta/delete?id=' . $row['CODVENTA'] ?>"
                 class="bg-danger p-2 text-white eliminar">
                 <i class="fa-solid fa-trash"></i>
               </a>
-            </td>
+            </td-->
           </tr>
         <?php } ?>
 

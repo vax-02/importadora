@@ -39,12 +39,11 @@ class Login extends Controller
                             header('Location: /' . APP_NAME . '/Inicio');
                             return 0;
                         case 2: //Supervisor
-                            header('Location: /' . APP_NAME . '/Sucursal/Supervisar');
+                            header('Location: /' . APP_NAME . '/Sucursal/Inicio');
                             return 0;
                         case 3: //Vendedor
-                            header('Location: /' . APP_NAME . '/Venta');
+                            header('Location: /' . APP_NAME . '/Sucursal/Inicio');
                             return 0;
-
                     }
 
                 } else {

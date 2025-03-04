@@ -33,13 +33,14 @@ class Venta extends Controller
         session_start();
         $model = $this->model('Venta');
 
+        print_r($_POST);
+        
         $id = $model->create_venta([
             'IDP' => $_SESSION['id'],
             'CODCLI' => $_POST['clinte'],
             'SUCU' => $_SESSION['cod_sucursal']
-
         ]);
-
+        
         for ($i = 0; $i < $_POST['total']; $i++) {
             $model->create_detalle_venta(
                 [
