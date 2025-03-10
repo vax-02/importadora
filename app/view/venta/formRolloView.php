@@ -1,5 +1,5 @@
 <?php
-$title = 'Venta | Telas';
+$title = 'Venta | Rollos';
 include_once '../app/view/template/header.php';
 include_once '../app/view/nav/superior.php';
 include_once '../app/view/template/formModalCliente.php';
@@ -72,18 +72,17 @@ include_once '../app/view/template/formModalCliente.php';
                             <label for="">Calidad</label>
                             <input type="text" id="caliTela" class="form form-control" disabled>
                         </div>
-                        <div class="col-12">
-                            <label for="">Metraje</label>
-                            <input type="text" id="metrajeTela" class="form form-control" disabled>
+                        <div class="col-6">
+                            <label for="">Rollos disponibles:</label>
+                            <input type="text" id="numrollos" class="form form-control" disabled>
                         </div>
                         <div class="col-md-6 col-lg-6 col-sm-12">
-                            <input type="hidden" id="precioTelaRef" class="form form-control">
                             <label for="">Precio</label>
-                            <input type="number" id="precioTela" class="form form-control" readonly>
+                            <input type="number" id="precioRollo" class="form form-control" readonly>
                         </div>
-                        <div class="col-md-6 col-lg-6 col-sm-12">
-                            <label for="">Metros</label>
-                            <input type="number" id="metrTela" class="form form-control">
+                        <div class="col-md-12 col-lg-6 col-sm-12">
+                            <label for="">Rollos</label>
+                            <input type="number" id="rollosCompra" class="form form-control">
                         </div>
                     </div>
                 </div>
@@ -105,12 +104,12 @@ include_once '../app/view/template/formModalCliente.php';
         <a href="/<?php echo APP_NAME; ?>/Venta" class="text-secondary">
             Venta
         </a>
-        > Tela
+        > Rollo de tela
 
     </h4>
     <div class="row justify-content-center align-items-center  text-center" style="min-height: 70vh;">
         <div class="col-10">
-            <form action="/<?php echo APP_NAME; ?>/Venta/create" method="POST" class="border-form mb-4"
+            <form action="/<?php echo APP_NAME; ?>/Venta/create_venta_rollos" method="POST" class="border-form mb-4"
                 id="form-venta-telas">
                 <input type="hidden" name="clinte" id="cliente">
 
@@ -374,7 +373,7 @@ include_once '../app/view/template/formModalCliente.php';
 include_once '../app/view/nav/inferior.php';
 ?>
 <script src="/<?php echo APP_NAME ?>/public/js/form-part.js"></script>
-<script src="/<?php echo APP_NAME ?>/public/js/ventaTela.js"></script>
+<script src="/<?php echo APP_NAME ?>/public/js/ventaRollo.js"></script>
 
 <script src="/<?php echo APP_NAME ?>/public/js/Validator.js"></script>
 <script src="/<?php echo APP_NAME ?>/public/js/ValidatorCliente.js"></script>

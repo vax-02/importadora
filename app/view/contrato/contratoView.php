@@ -23,7 +23,19 @@ include_once '../app/view/nav/superior.php';
         </div>
     </div>
 
+    <?php if(isset($_SESSION['error_contrato'])){
+        ?>
 
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Error!</strong> <?php echo $_SESSION['error_contrato'] ?>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <?php
+        unset($_SESSION['error_contrato']);
+    }?>
     <div class="container cont-table">
         <table class="table display table-hover text-center" id="table2">
             <thead>
@@ -32,10 +44,8 @@ include_once '../app/view/nav/superior.php';
                     <th scope="col" class="ocultar-columna">Sastre</th>
                     <th scope="col">Fecha Inicio</th>
                     <th scope="col">Fecha Entrega</th>
-                    <th scope="col">Total (bs.)</th>
                     <th scope="col">Estato</th>
                     <th scope="col">Detalle</th>
-                    <th scope="col">Opciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -57,9 +67,7 @@ include_once '../app/view/nav/superior.php';
                     <td>
                         <?php echo $row['FECHA_ENTREGA'] ?>
                     </td>
-                    <td>
-                        <?php echo $row['TOTAL'] ?>
-                    </td>
+
                     <td>
                         <?php
               if ($row['ESTADO']) {
@@ -88,12 +96,12 @@ include_once '../app/view/nav/superior.php';
                             <i class="fa-solid fa-pen"></i>
                         </a>
                     </td>
-                    <td>
+                    <!--td>
                         <a href="/<?php echo APP_NAME . '/Contrato/delete?id=' . $row['CODCONTRATO'] ?>"
                             class="bg-danger p-2 text-white eliminar">
                             <i class="fa-solid fa-trash"></i>
                         </a>
-                    </td>
+                    </td-->
                 </tr>
                 <?php } ?>
 

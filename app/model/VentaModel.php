@@ -78,10 +78,12 @@ class VentaModel extends DB
     {
         try {
             $temp = $this->CONEX->connect->prepare('INSERT INTO VENTA
-                (IDPERSONAL, CODCLIENTE, CODSUCURSAL) VALUES (:IDP, :CODCLI, :SUCU)');
+                (IDPERSONAL, CODCLIENTE, CODSUCURSAL, DESCUENTO) VALUES (:IDP, :CODCLI, :SUCU, :DESCU)');
             $temp->bindParam(':IDP', $data['IDP']);
             $temp->bindParam(':CODCLI', $data['CODCLI']);
             $temp->bindParam(':SUCU', $data['SUCU']);
+            $temp->bindParam(':DESCU', $data['DESCUENTO']);
+
 
             $temp->execute();
             return $this->CONEX->connect->lastInsertId();
@@ -91,6 +93,24 @@ class VentaModel extends DB
         return false;
     }
 
+    public function create_venta_rollo($data)
+    {
+        try {
+            $temp = $this->CONEX->connect->prepare('INSERT INTO VENTA
+                (IDPERSONAL, CODCLIENTE, CODSUCURSAL, DESCUENTO,TIPO_VENTA) VALUES (:IDP, :CODCLI, :SUCU, :DESCU,:TV)');
+            $temp->bindParam(':IDP', $data['IDP']);
+            $temp->bindParam(':CODCLI', $data['CODCLI']);
+            $temp->bindParam(':SUCU', $data['SUCU']);
+            $temp->bindParam(':DESCU', $data['DESCUENTO']);
+            $temp->bindParam(':TV', $data['TIPO_VENTA']);
+
+            $temp->execute();
+            return $this->CONEX->connect->lastInsertId();
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+        return false;
+    }
     public function create_detalle_venta($data)
     {
         try {
@@ -175,7 +195,7 @@ class VentaModel extends DB
             
             (SELECT NOMBRE FROM SUCURSAL WHERE CODSUCURSAL = V.CODSUCURSAL) AS CODSUCURSAL,
 
-            (SELECT RAZONSOCIAL FROM CLIENTE WHERE IDCLIENTE = V.CODCLIENTE) AS CLIENTE
+            (SELECT RAZONSOCIAL FROM CLIENTE WHERE IDCLIENTE = V.CODCLIENTE) AS CLIENTE, DESCUENTO,TIPO_VENTA
             
             FROM VENTA V WHERE
             CODVENTA = :CODV ');
@@ -190,6 +210,32 @@ class VentaModel extends DB
     }
     
     
+    public function detailProductsSellsRollos($id)
+    {
+        try {
+            $temp = $this->CONEX->connect->prepare('SELECT DV.PRECIO, (DV.CANTIDAD/RT.MROLLOCOMPLETO) AS CANTIDAD, T.NOMBRE, CASE
+                WHEN CALIDAD = 1 THEN \'1RA\'
+                WHEN CALIDAD = 2 THEN \'2DA\'
+                WHEN CALIDAD = 3 THEN \'3RA\'
+                WHEN CALIDAD = 4 THEN \'4TA\'
+            END AS CALIDAD, RT.CODCOLOR,DV.CODTELA
+            FROM DETALLE_VENTA DV, TELA T, ROLLO_TELA RT
+            WHERE
+            DV.CODVENTA = :CODV AND
+            T.CODTELA = DV.CODTELA AND
+            DV.CODTELA = RT.CODTELA AND
+            DV.CODCOLOR = RT.CODCOLOR');
+            
+            $temp->bindParam(':CODV', $id);
+
+            $temp->execute();
+            return $temp->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+        return false;   
+    }
+
     public function detailProductsSells($id)
     {
         try {
@@ -198,7 +244,7 @@ class VentaModel extends DB
                 WHEN CALIDAD = 2 THEN \'2DA\'
                 WHEN CALIDAD = 3 THEN \'3RA\'
                 WHEN CALIDAD = 4 THEN \'4TA\'
-            END AS CALIDAD, CODCOLOR
+            END AS CALIDAD, CODCOLOR,DV.CODTELA
             FROM DETALLE_VENTA DV, TELA T
             WHERE
             DV.CODVENTA = :CODV AND
@@ -232,6 +278,20 @@ class VentaModel extends DB
         }
         return false;
     }
+    public function totalRollosAndPrecio($id)
+    {
+        try {
+            $temp = $this->CONEX->connect->prepare('SELECT sum(dv.cantidad/rt.mrollocompleto) as METROS, SUM((dv.cantidad/rt.mrollocompleto) * dv.precio) as TOTAL
+            FROM venta v, detalle_venta dv, rollo_tela rt
+            WHERE v.codventa = dv.codventa and dv.codtela = rt.codtela and dv.codcolor = rt.codcolor and v.codventa  = :cv');
+            $temp->bindParam(':cv',$id);
+            $temp->execute();
+            return $temp->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+        return false;
+    }
     public function totalMetros($id)
     {
         try {
@@ -257,10 +317,9 @@ class VentaModel extends DB
             $temp = $this->CONEX->connect->prepare('SELECT CODVENTA, FECHA_VENTA, 
             CONCAT(P.NOMBRE,\' \',PATERNO,\' \',MATERNO) AS PERSONAL, P.CELULAR,
             V.CODVENTA,
-            
             (SELECT NOMBRE FROM SUCURSAL WHERE CODSUCURSAL = V.CODSUCURSAL) AS CODSUCURSAL,
 
-            RAZONSOCIAL AS CLIENTE, C.TELEFONO, CODTIPO
+            RAZONSOCIAL AS CLIENTE, C.TELEFONO, CODTIPO, V.DESCUENTO,V.TIPO_VENTA
 
             FROM VENTA V, PERSONAL P, CLIENTE C WHERE
             CODVENTA = :CODV  AND

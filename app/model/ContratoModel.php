@@ -12,7 +12,7 @@ class ContratoModel extends DB
         try {
 
             $temp = $this->CONEX->connect->prepare('SELECT CODCONTRATO, SASTRE, (COSTO_TOTAL_TELA+COSTO_SASTRE) AS TOTAL,
-            FECHA_INICIO, FECHA_ENTREGA, ESTADO FROM CONTRATO');
+            FECHA_INICIO, FECHA_ENTREGA, ESTADO FROM CONTRATO ORDER BY FECHA_INICIO DESC');
 
             $temp->execute();
             return $temp->fetchAll(PDO::FETCH_ASSOC);
@@ -24,9 +24,9 @@ class ContratoModel extends DB
     {
         try {
             $temp = $this->CONEX->connect->prepare('INSERT INTO CONTRATO
-                (`CODCLIENTE`, `CODEMPLEADO`, `SASTRE`, `CODTELA`, `METROS_TELA`,
+                (`CODCLIENTE`, `CODEMPLEADO`, `SASTRE`, `CODTELA`,CODCOLOR,FRUNCIDO, `METROS_TELA`,
                 `COSTO_TOTAL_TELA`, `COSTO_SASTRE`, `DESCRIPCION`, `FECHA_ENTREGA`)
-                VALUES (:CODCLI , :CODEMP, :SAS, :CODTE, :M_TELA, 
+                VALUES (:CODCLI , :CODEMP, :SAS, :CODTE,:CODCOL ,:FRUN,:M_TELA, 
                 :COS_TELA , :COS_SAS , :DESCRI, :FECHA_E)');
 
 
@@ -34,6 +34,8 @@ class ContratoModel extends DB
             $temp->bindParam(':CODEMP', $data['PERSONAL']);
             $temp->bindParam(':SAS', $data['SASTRE']);
             $temp->bindParam(':CODTE', $data['TELA']);
+            $temp->bindParam(':CODCOL', $data['C_COLOR']);
+            $temp->bindParam(':FRUN', $data['FRUNCIDO']);
             $temp->bindParam(':M_TELA', $data['M_TELA']);
             $temp->bindParam(':COS_TELA', $data['C_TELA']);
             $temp->bindParam(':COS_SAS', $data['C_SASTRE']);
@@ -111,7 +113,7 @@ class ContratoModel extends DB
         try {
 
             $temp = $this->CONEX->connect->prepare('SELECT 
-            CON.CODCONTRATO,SASTRE, CLI.RAZONSOCIAL, CLI.TELEFONO, CLI.CODTIPO,
+            CON.CODCONTRATO,SASTRE,CON.FRUNCIDO,C_INSTALACION, C_TUBOS, CLI.RAZONSOCIAL, CLI.TELEFONO, CLI.CODTIPO,
             CONCAT(P.NOMBRE, \' \', PATERNO, \' \',MATERNO) AS EMPLEADO, P.CELULAR,
             T.NOMBRE, CON.ESTADO,
             CASE
@@ -147,6 +149,19 @@ class ContratoModel extends DB
 
             $temp->execute();
             return $temp->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
+    public function instalacion($id,$costo,$canti){
+        try {
+            $temp = $this->CONEX->connect->prepare('UPDATE FROM CONTRATO SET C_INSTALACION = :CI, C_TUBOS = :CT WHERE CODCONTRATO = :ID');
+            $temp->bindParam(':ID',$id);
+            $temp->bindParam(':CI',$costo);
+            $temp->bindParam(':CT',$canti);
+
+            $temp->execute();
+            return $temp->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             echo $e->getMessage();
         }

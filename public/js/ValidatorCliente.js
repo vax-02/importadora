@@ -1,4 +1,3 @@
-console.log('traj')
 const VAL = new Validator();
 
 const btnSave = document.getElementById("btnSave");

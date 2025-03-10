@@ -61,7 +61,7 @@ include_once '../app/view/nav/superior.php';
                               <th scope="col"> Nombre</th>
                               <th scope="col"> Color</th>
                               <th scope="col"> Calidad</th>
-                              <th scope="col"> Cantidad</th>
+                              <th scope="col"> Cantidad <?php echo ($datos['TIPO_VENTA'])?'(ROLLOS)':'(m.)'?></th>
                               <th scope="col"> Precio</th>
                               <th scope="col" class="sub-total"> Subtotal</th>
                           </tr>
@@ -102,8 +102,20 @@ include_once '../app/view/nav/superior.php';
                           ?>
                           <tr>
                               <td colspan="4"></td>
-                              <td>Monto total: </td>
+                              <td>Monto Total: </td>
                               <td> <?php echo $total ?> </td>
+                          </tr>
+
+                          <tr>
+                              <td colspan="4"></td>
+                              <td>Descuento: </td>
+                              <td> <?php echo $datos['DESCUENTO'].' %' ?> </td>
+                          </tr>
+
+                          <tr>
+                              <td colspan="4"></td>
+                              <td>Monto Final: </td>
+                              <td> <?php echo number_format($total - $total * ($datos['DESCUENTO']/100),1) ?> </td>
                           </tr>
                       </tbody>
                   </table>

@@ -9,7 +9,7 @@ class Contrato extends Controller
 
     public function form()
     {
-        $tela = $this->model('Tela')->getTelas();
+        $tela = $this->model('Tela')->getAllTelas();
         $cliente = $this->model('Cliente')->view();
         $this->view('contrato/form', $tela, $cliente);
     }
@@ -20,23 +20,32 @@ class Contrato extends Controller
         session_start();
 
         $model = $this->model('Contrato');
+        $modelTela = $this->model('Tela');
 
-
-        $data = [
-            'PERSONAL' => $_SESSION['id'],
-            'CLIENTE' => $_POST['cliente'],
-            'TELA' => $_POST['codtela'],
-            'SASTRE' => 'NO DEFINIDO',
-            'C_SASTRE' => $_POST['precio_sastre'],
-            'M_TELA' => $_POST['metros_tela'],
-            'C_TELA' => $_POST['precio_tela'],
-            'FECHA_ENTREGA' => $_POST['fecha_entrega'],
-            'DESCRI' => $_POST['descripcion'],
-        ];
-
-        $id_contrato = $model->create($data);
-        if ($id_contrato != 0) {
-            for ($i = 0; $i < $_POST['total']; $i++) {
+        $tela = $modelTela->find_stock($_POST['color'],$_POST['codtela']);
+        $totalTela = ($tela['NUMROLLOS']==0? 1 : $tela['NUMROLLOS']) * $tela['MROLLOCOMPLETO'] + ($tela['METROLLO'] == $tela['MROLLOCOMPLETO']? 0 : $tela['METROLLO']);
+        
+        if($_POST['metros_tela'] <= $totalTela){
+            $data = [
+                'PERSONAL' => $_SESSION['id'],
+                'CLIENTE' => $_POST['cliente'],
+                'TELA' => $_POST['codtela'],
+                'SASTRE' => 'NO DEFINIDO',
+                'C_SASTRE' => $_POST['precio_sastre'],
+                'M_TELA' => $_POST['metros_tela'],
+                'C_TELA' => $_POST['precio_tela'],
+                'FRUNCIDO' => $_POST['frunsido'],
+                'C_COLOR' => $_POST['color'],
+                'FECHA_ENTREGA' => $_POST['fecha_entrega'],
+                'DESCRI' => $_POST['descripcion'],
+            ];
+            $id_contrato = $model->create($data);
+            if($_POST['costoTubo']!=''){
+              $model->instalacion($id_contrato,$_POST['costoTubo'],$_POST['numeroTubos']);  
+            }
+            
+            if ($id_contrato != 0) {
+                for ($i = 0; $i < $_POST['total']; $i++) {
                 $data = [
                     'CODCONTRATO' => $id_contrato,
                     'ALTO' => $_POST['alto' . $i],
@@ -44,7 +53,30 @@ class Contrato extends Controller
                     'CANT' => $_POST['cantidad' . $i],
                 ];
                 $model->create_detalle($data);
+                }
             }
+
+     
+            $modelVenta = $this->model('Venta');
+        
+            $id = $modelVenta->create_venta([
+                'IDP' => $_SESSION['id'],
+                'CODCLI' => $_POST['cliente'],
+                'SUCU' => $_SESSION['cod_sucursal'],
+                'DESCUENTO' => 0
+            ]);
+        
+            $modelVenta->create_detalle_venta(
+                [
+                    'CODV' => $id,
+                    'CODT' => $_POST['codtela'],
+                    'CODC' => $_POST['color'],
+                    'PRE' => $_POST['precioTelaOriginal'],
+                    'CANT' => $_POST['metros_tela'],
+                ]
+            );
+        }else{
+            $_SESSION['error_contrato'] = 'No hay suficiente tela para concretar el contato';
         }
 
         header('Location: /' . APP_NAME . '/Contrato');
@@ -84,7 +116,8 @@ class Contrato extends Controller
         $contrato = $model->contrato($_GET['id']);
         $detalle = $model->get_detalle_contrato($_GET['id']);
 
-        //print_r($detalle);
+
+        //print_r($contrato);
         $cantidadTotal = 0;
 
         $pdf = new FPDF();
@@ -149,9 +182,25 @@ class Contrato extends Controller
 
         $pdf->Cell(0, 5, 'Marca: ' . $contrato['MARCA'], 0, 1, 'L');
         $pdf->Cell(0, 5, 'Calidad: ' . $contrato['CALIDAD'], 0, 1, 'L');
+        
+        
+        $pdf->Cell(0, 5, 'Cantidad (m.): ' . $contrato['METROS_TELA'], 0, 1, 'L');
+        $pdf->Cell(0, 5, 'Fruncido: (cm.): ' . $contrato['FRUNCIDO'] , 0, 1, 'L');
+        $pdf->Ln();
+        if($contrato['C_INSTALACION'] == 0){
+            $pdf->Cell(0, 5, 'SIN INSTALACION' , 0, 1, 'C');
+        }else{
+            $pdf->Cell(0, 5, 'INSTALACION' , 0, 1, 'C');
+            $pdf->Ln();
 
-        $pdf->Cell(0, 5, 'Cantidad (m): ' . $contrato['METROS_TELA'], 0, 1, 'L');
-        $pdf->Cell(0, 5, 'COSTO TOTAL: Bs. ' . $contrato['TOTAL'], 0, 1, 'C');
+            $pdf->Cell(100, 5, 'Numero de tubos (m.): ' . $contrato['C_TUBOS'] , 0, 0, 'L');
+            $pdf->Cell(0, 5, 'Costo (Bs.): ' . $contrato['C_INSTALACION'] , 0, 1, 'L');
+
+        }
+        $pdf->Ln();
+
+        $costo_total = $contrato['FRUNCIDO']* $contrato['COSTO_SASTRE'] + $contrato['COSTO_TOTAL_TELA'] + $contrato['C_INSTALACION'] * $contrato['C_TUBOS'];
+        $pdf->Cell(0, 5, 'COSTO TOTAL: Bs. '.$costo_total , 0, 1, 'C');
 
 
         $pdf->Line(10, $pdf->GetY(), 200, $pdf->GetY()); // Línea horizontal

@@ -3,11 +3,12 @@ let stockMetros, stockRollos, metrosCompleto;
 const id_tela = document.getElementById("id_tela");
 const color_tela = document.getElementById("color_tela");
 
-const precioTela = document.getElementById("precioTela");
-const metrosTela = document.getElementById("metrTela");
+const precioRollo = document.getElementById("precioRollo");
+const rollosCompra = document.getElementById("rollosCompra");
 
 const btnInsertTela = document.getElementById("btnInsertTela");
 btnInsertTela.disabled = true;
+
 let inputCliente = document.getElementById("cliente");
 
 function selectClienteTela(btn) {
@@ -29,10 +30,10 @@ function selectClienteTela(btn) {
   if (inputCliente.value == celdas[0].innerText.trim()) {
     inputCliente.value = "";
     btn.classList.remove("bg-success");
-    document.getElementById("btn-select-client").disabled = true
+    document.getElementById("btn-select-client").disabled = true;
   } else {
     inputCliente.value = celdas[0].innerText.trim();
-    document.getElementById("btn-select-client").disabled = false
+    document.getElementById("btn-select-client").disabled = false;
     btn.classList.toggle("bg-success");
   }
 }
@@ -57,32 +58,24 @@ function insertTela(btn) {
       const nomTela = document.getElementById("nomTela");
       const marcTela = document.getElementById("marcTela");
       const caliTela = document.getElementById("caliTela");
-      const metrajeTela = document.getElementById("metrajeTela");
-      const precioTelaRef = document.getElementById("precioTelaRef");
-
+      const numrollos = document.getElementById("numrollos");
+      console.log(data);
       if (data.status === "success") {
         color_tela.value = data.data["CODCOLOR"];
         id_tela.value = data.data["CODTELA"];
         nomTela.value = data.data["NOMBRE"];
         marcTela.value = data.data["MARCA"];
         caliTela.value = data.data["CALIDAD"];
-        precioTela.value = data.data["PRECIO"];
-        precioTelaRef.value = data.data["PRECIO"];
+        precioRollo.value = data.data["PRECIOROLLO"];
 
         stockMetros = data.data["METROS"];
         metrosCompleto = data.data["MROLLOCOMPLETO"];
 
         stockRollos = data.data["ROLLOS"];
 
-        metrajeTela.value =
-          parseFloat(metrosCompleto) * parseInt(stockRollos) +
-          (parseFloat(metrosCompleto) == parseFloat(stockMetros)
-            ? 0
-            : parseFloat(stockMetros));
+        numrollos.value = stockRollos;
 
-        //console.log(metrajeTela.value);
-        //metrajeTela.value = 9;
-        if (parseInt(metrajeTela.value) < 10) {
+        if (parseInt(stockRollos) < 5) {
           document.getElementById("msg-alert").classList.remove("d-none");
         } else {
           document.getElementById("msg-alert").classList.add("d-none");
@@ -96,21 +89,14 @@ function insertTela(btn) {
     });
 }
 
-metrosTela.addEventListener("input", validateTwoInputs);
-precioTela.addEventListener("input", validateTwoInputs);
-function validateTwoInputs() {
-  total =
-    parseFloat(metrosCompleto) * parseInt(stockRollos) +
-    (parseFloat(metrosCompleto) == parseFloat(stockMetros)
-      ? 0
-      : parseFloat(stockMetros));
+rollosCompra.addEventListener("input", validateTwoInputs);
 
-  const isValid =
-    parseFloat(metrosTela.value) > 0 &&
-    parseFloat(precioTela.value) >=
-      parseFloat(document.getElementById("precioTelaRef").value) &&
-    parseFloat(metrosTela.value) <= total;
-  btnInsertTela.disabled = !isValid;
+function validateTwoInputs() {
+  btnInsertTela.disabled =
+    parseInt(numrollos.value) >= parseInt(rollosCompra.value) &&
+    parseInt(rollosCompra.value) > 0
+      ? false
+      : true;
 }
 
 function infoSucursal(btn) {
@@ -150,15 +136,15 @@ btnInsertTela.addEventListener("click", function () {
       "<div style='width: 15px; height:15px; display:inline-block; background:" +
         color_tela.value +
         ";'></div>",
-      document.getElementById("precioTela").value,
-      document.getElementById("metrTela").value,
-      parseFloat(document.getElementById("precioTela").value) *
-        parseFloat(document.getElementById("metrTela").value),
+      document.getElementById("precioRollo").value,
+      document.getElementById("rollosCompra").value,
+      parseFloat(document.getElementById("precioRollo").value) *
+        parseFloat(document.getElementById("rollosCompra").value),
       "<button type='button' onclick='eliminarFilaDesc(this)' class='btn btn-danger p-2'><i class='fas fa-trash'></i><button>",
     ])
     .draw(false);
 
-  metrosTela.value = "";
+  rollosCompra.value = "";
 });
 
 function eliminarFila(btn) {
@@ -253,10 +239,6 @@ function verificarTelas() {
   }
 }
 
-function addFormModalClient() {
-  console.log("hola");
-}
-
 
 document.getElementById("descuento").addEventListener("input", function () {
   desc = document.getElementById("val-descuento");
@@ -272,10 +254,9 @@ document.getElementById("descuento").addEventListener("input", function () {
   );
 });
 
-
 function redondeo(val) {
-  if (parseFloat((parseFloat(val.toFixed(1)) % 1).toFixed(1)) == 0.1){
-    return parseInt(val.toFixed(1))
+  if (parseFloat((parseFloat(val.toFixed(1)) % 1).toFixed(1)) == 0.1) {
+    return parseInt(val.toFixed(1));
   }
-  return parseFloat(val.toFixed(1))
+  return parseFloat(val.toFixed(1));
 }

@@ -27,18 +27,23 @@ class Venta extends Controller
         $clientes = $this->model('Cliente');
         $this->view('Venta/form', $telas->getAll(), $clientes->view());
     }
+    public function formRollos(){
+        $telas = $this->model('Tela');
+        //print_r($telas->getAll());
+        $clientes = $this->model('Cliente');
+        $this->view('Venta/formRollo', $telas->getAll(), $clientes->view());
+    }
     public function create()
     {
         error_reporting(0);
         session_start();
         $model = $this->model('Venta');
-
-        print_r($_POST);
         
         $id = $model->create_venta([
             'IDP' => $_SESSION['id'],
             'CODCLI' => $_POST['clinte'],
-            'SUCU' => $_SESSION['cod_sucursal']
+            'SUCU' => $_SESSION['cod_sucursal'],
+            'DESCUENTO' => $_POST['descuento']
         ]);
         
         for ($i = 0; $i < $_POST['total']; $i++) {
@@ -51,6 +56,41 @@ class Venta extends Controller
                     'CANT' => $_POST['cantidad' . $i],
                 ]
             );
+        }
+
+        header('Location: /' . APP_NAME . '/Venta');
+    }
+
+    public function create_venta_rollos()
+    {
+        error_reporting(0);
+        session_start();
+        $model = $this->model('Venta');
+        $TELA = $this->model('Tela');
+
+        
+        
+        $id = $model->create_venta_rollo([
+            'IDP' => $_SESSION['id'],
+            'CODCLI' => $_POST['clinte'],
+            'SUCU' => $_SESSION['cod_sucursal'],
+            'DESCUENTO' => $_POST['descuento'],
+            'TIPO_VENTA' => 1
+        ]);
+        print_r($_POST);
+        for ($i = 0; $i < $_POST['total']; $i++) {
+            $rolloCompleto = $TELA->get_by_color_and_cod($_POST['codcolor'.$i],$_POST['codtela'.$i])['MROLLOCOMPLETO'];
+            
+            $model->create_detalle_venta(
+                [
+                    'CODV' => $id,
+                    'CODT' => $_POST['codtela' . $i],
+                    'CODC' => $_POST['codcolor' . $i],
+                    'PRE' => $_POST['precio' . $i],
+                    'CANT' => $_POST['cantidad'.$i]*$rolloCompleto,
+                    ]
+                );
+
         }
 
         header('Location: /' . APP_NAME . '/Venta');
@@ -102,11 +142,18 @@ class Venta extends Controller
     }
     public function detail()
     {
-        $datosGenerales = $this->model('Venta');
+        $model = $this->model('Venta');
 
-        $detail =  $this->model('Venta');
+        $detalle_general = $model->detail($_GET['id']);
+        $detalle_descrip = $model->detailProductsSells($_GET['id']);
+        
+        if($detalle_general['TIPO_VENTA']){
+            foreach($detalle_descrip as &$dd){
+                $dd['CANTIDAD'] /= $this->model('Tela')->get_by_color_and_cod($dd['CODCOLOR'],$dd['CODTELA'])['MROLLOCOMPLETO']; 
+            }
+        }
 
-        $this->view('venta/detail', $datosGenerales->detail($_GET['id']), $detail->detailProductsSells($_GET['id']));
+        $this->view('venta/detail', $detalle_general, $detalle_descrip);
     }
     
     public function pdf()
@@ -115,10 +162,23 @@ class Venta extends Controller
         $compra = $model->detail($_GET['id']);
         
         $detalle = $model->detailProductsSells($_GET['id']);
-
-
-        $precio = $model->totalProducts($_GET['id']);
-        $total = $model->totalMetros($_GET['id']);
+        if($compra['TIPO_VENTA']){
+            $total = $precioCantidadRollo = $model->totalRollosAndPrecio($_GET['id']);
+            $monto_del_recibo =[
+                'completo' => number_format($precioCantidadRollo['TOTAL'] - $precioCantidadRollo['TOTAL']*($compra['DESCUENTO']/100),1),
+                'entero' => floor($precioCantidadRollo['TOTAL'] - $precioCantidadRollo['TOTAL']*($compra['DESCUENTO']/100)),
+                'ctvs' => number_format( fmod($precioCantidadRollo['TOTAL'] - $precioCantidadRollo['TOTAL']*($compra['DESCUENTO']/100),1),1)*100
+            ] ;
+        }else{
+            $precio = $model->totalProducts($_GET['id']);
+            $total = $model->totalMetros($_GET['id']);
+            $monto_del_recibo =[
+                'completo' => number_format($precio['TOTAL'] - $precio['TOTAL']*($compra['DESCUENTO']/100),1),
+                'entero' => floor($precio['TOTAL'] - $precio['TOTAL']*($compra['DESCUENTO']/100)),
+                'ctvs' => number_format( fmod($precio['TOTAL'] - $precio['TOTAL']*($compra['DESCUENTO']/100),1),1)*100
+            ] ;
+        }
+        
         $cantidadTotal = 0;  
         $formatter = new NumberFormatter('es_ES', NumberFormatter::SPELLOUT);
         $pdf = new FPDF();
@@ -172,7 +232,7 @@ class Venta extends Controller
         $pdf->Ln(5);
 
         $pdf->SetX($pdf->GetPageWidth() - 40);
-        $pdf->Cell(35, 5, 'Bs.  ' . $precio['TOTAL'], 1, 1, 'L');
+        $pdf->Cell(35, 5, 'Bs.  ' . $monto_del_recibo['completo'] , 1, 1, 'L');
         $pdf->SetX($pdf->GetPageWidth() - 40);
 
 
@@ -185,7 +245,7 @@ class Venta extends Controller
 
         $pdf->Ln(10);
         $pdf->Cell(26, 5, 'La suma de:', 0, 0, 'L');
-        $pdf->Cell(134, 5, $formatter->format($precio['TOTAL']) . ' 00/100', 0, 0, 'L');
+        $pdf->Cell(134, 5, utf8_decode($formatter->format($monto_del_recibo['entero'])) .' '. $monto_del_recibo['ctvs'].'/100', 0, 0, 'L');
         $pdf->Line(30, 45, 165, 45);
         $pdf->Line(6, 55, 144, 55);
         $pdf->SetXY(145, 50);
@@ -194,7 +254,8 @@ class Venta extends Controller
 
         $pdf->Ln(10);
         $pdf->Cell(35, 5, 'Por concepto de:', 0, 0, 'L');
-        $pdf->Cell(100, 5, $formatter->format($total['METROS']) . ' metros de tela', 0, 0, 'L');
+        $tipo_producto = $compra['TIPO_VENTA']?' Rollo(s) ':' metro(s) ';
+        $pdf->Cell(100, 5, $formatter->format($total['METROS']). $tipo_producto.'de tela', 0, 0, 'L');
 
         $pdf->Line(38, 65, 165, 65);
 
@@ -217,7 +278,13 @@ class Venta extends Controller
     {
         $model = $this->model('Venta');
         $venta = $model->detailForContrat($_GET['id']);
-        $detalle = $model->detailProductsSells($_GET['id']);
+
+        if($venta['TIPO_VENTA']){
+            $detalle = $model->detailProductsSellsRollos($_GET['id']);
+        }else{
+            $detalle = $model->detailProductsSells($_GET['id']);
+        }
+
 
         $cantidadTotal = 0;
 
@@ -273,7 +340,7 @@ class Venta extends Controller
         $pdf->Cell(18, 10, 'COLOR', 1, 0, 'C', true);
         $pdf->Cell(22, 10, 'CALIDAD', 1, 0, 'C', true);
         $pdf->Cell(20, 10, 'PRECIO', 1, 0, 'C', true);
-        $pdf->Cell(26, 10, 'CANTIDAD', 1, 0, 'C', true);
+        $pdf->Cell(26, 10, ($venta['TIPO_VENTA'])?'ROLLOS':'METROS', 1, 0, 'C', true);
         $pdf->Cell(28, 10, 'SUB. TOTAL', 1, 0, 'C', true);
 
         $pdf->Ln();
@@ -307,11 +374,24 @@ class Venta extends Controller
         $pdf->SetX(147);
         $pdf->SetFillColor(200, 220, 255); // Color de fondo para los encabezados
 
+
         $pdf->Cell(26, 8, 'TOTAL', 1, 0, 'C', true);
         $pdf->Cell(28, 8, $cantidadTotal, 1, 1, 'C');
         
+        $pdf->SetX(147);
+        
+        $pdf->Cell(26, 8, 'DESC.', 1, 0, 'C', true);
+        $pdf->Cell(28, 8, $venta['DESCUENTO'].' %', 1, 1, 'C');
+        
+        $pdf->SetX(147);
+        
+        $pdf->Cell(26, 8, 'C. FINAL', 1, 0, 'C', true);
+        $pdf->Cell(28, 8, $cantidadTotal - $cantidadTotal * ($venta['DESCUENTO']/100), 1, 1, 'C');
+        
+        
         $pdf->Ln();
         
+
             $pdf->Ln(5);
             $pdf->Line(10, $pdf->GetY(), 200, $pdf->GetY()); // Línea horizontal
             

@@ -4,5 +4,4 @@
   include_once 'library/core.php';
   include_once 'library/DB.php';
   include_once 'library/fpdf.php';
-  
 ?>

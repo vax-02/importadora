@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 04-03-2025 a las 03:18:10
+-- Tiempo de generación: 10-03-2025 a las 04:26:09
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.2.0
 
@@ -35,6 +35,13 @@ CREATE TABLE `cliente` (
   `TELEFONO` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `cliente`
+--
+
+INSERT INTO `cliente` (`IDCLIENTE`, `RAZONSOCIAL`, `CI_NIT`, `CODTIPO`, `TELEFONO`) VALUES
+(114, 'JAVIER', 7888888, 'personal', 72345287);
+
 -- --------------------------------------------------------
 
 --
@@ -61,14 +68,33 @@ CREATE TABLE `contrato` (
   `CODEMPLEADO` int(11) NOT NULL,
   `SASTRE` varchar(1509) DEFAULT NULL,
   `CODTELA` int(11) DEFAULT NULL,
+  `CODCOLOR` varchar(10) NOT NULL,
   `METROS_TELA` int(11) NOT NULL,
   `COSTO_TOTAL_TELA` float DEFAULT NULL,
   `COSTO_SASTRE` float DEFAULT NULL,
+  `FRUNCIDO` decimal(10,1) NOT NULL,
   `DESCRIPCION` text NOT NULL,
   `FECHA_INICIO` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `FECHA_ENTREGA` date DEFAULT NULL,
+  `C_INSTALACION` int(10) NOT NULL DEFAULT 0,
+  `C_TUBOS` int(10) NOT NULL DEFAULT 0,
   `ESTADO` int(11) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `contrato`
+--
+
+INSERT INTO `contrato` (`CODCONTRATO`, `CODCLIENTE`, `CODEMPLEADO`, `SASTRE`, `CODTELA`, `CODCOLOR`, `METROS_TELA`, `COSTO_TOTAL_TELA`, `COSTO_SASTRE`, `FRUNCIDO`, `DESCRIPCION`, `FECHA_INICIO`, `FECHA_ENTREGA`, `C_INSTALACION`, `C_TUBOS`, `ESTADO`) VALUES
+(57, 114, 1, 'NO DEFINIDO', 65, '#00ff04', 20, 60, 17, '0.0', 'asd', '2025-03-10 02:08:28', '2025-12-12', 0, 0, 1),
+(58, 114, 1, 'NO DEFINIDO', 65, '#00ff04', 20, 60, 17, '0.0', 'asd', '2025-03-10 02:19:29', '2025-12-12', 0, 0, 1),
+(59, 114, 1, 'NO DEFINIDO', 65, '#00ff04', 20, 60, 17, '0.0', 'asd', '2025-03-10 02:28:04', '2025-12-12', 0, 0, 1),
+(60, 114, 1, 'NO DEFINIDO', 65, '#00ff04', 20, 60, 17, '0.0', 'asd', '2025-03-10 02:28:09', '2025-12-12', 0, 0, 1),
+(61, 114, 1, 'NO DEFINIDO', 65, '#00ff04', 20, 60, 17, '0.0', 'asd', '2025-03-10 02:28:23', '2025-12-12', 0, 0, 1),
+(62, 114, 1, 'NO DEFINIDO', 65, '#fa0000', 20, 60, 17, '0.0', 'sdasd', '2025-03-10 02:35:53', '2025-12-12', 0, 0, 1),
+(63, 114, 1, 'NO DEFINIDO', 65, '#fa0000', 20, 60, 17, '0.0', 'sdasd', '2025-03-10 02:36:39', '2025-12-12', 0, 0, 1),
+(66, 114, 1, 'NO DEFINIDO', 65, '#fa0000', 144, 432, 17, '0.0', 'dad', '2025-03-10 02:50:22', '2025-02-12', 0, 0, 1),
+(67, 114, 1, 'NO DEFINIDO', 65, '#fa0000', 14, 42, 17, '2.5', 'adsdasdas', '2025-03-10 03:21:44', '2025-12-12', 10, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -339,6 +365,15 @@ CREATE TABLE `rollo_tela` (
   `PRECIO_METRO_REAL` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `rollo_tela`
+--
+
+INSERT INTO `rollo_tela` (`CODROLLO`, `CODTELA`, `CODCOLOR`, `NUMROLLOS`, `METROLLO`, `MROLLOCOMPLETO`, `PRECIOROLLO`, `PRECIOROLLOREAL`, `PRECIO_METRO`, `PRECIO_METRO_REAL`) VALUES
+(399, 65, '#000000', 0, '0.0', 100, 240, 200, 0, 0),
+(400, 65, '#fa0000', 0, '92.0', 100, 240, 200, 0, 0),
+(401, 65, '#00ff04', 0, '80.0', 100, 240, 200, 0, 0);
+
 -- --------------------------------------------------------
 
 --
@@ -378,6 +413,13 @@ CREATE TABLE `tela` (
   `CODSUCURSAL` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `tela`
+--
+
+INSERT INTO `tela` (`CODTELA`, `NOMBRE`, `CALIDAD`, `CODMARCA`, `METROS`, `PRECIO`, `PRECIO_REAL`, `CODSUCURSAL`) VALUES
+(65, 'bonge', '1', 14, 100, 3, 2, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -389,7 +431,9 @@ CREATE TABLE `venta` (
   `IDPERSONAL` int(11) NOT NULL,
   `CODCLIENTE` int(11) DEFAULT NULL,
   `FECHA_VENTA` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `CODSUCURSAL` int(11) NOT NULL
+  `CODSUCURSAL` int(11) NOT NULL,
+  `DESCUENTO` int(11) NOT NULL DEFAULT 0,
+  `TIPO_VENTA` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -521,7 +565,7 @@ ALTER TABLE `venta`
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `IDCLIENTE` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=114;
+  MODIFY `IDCLIENTE` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=115;
 
 --
 -- AUTO_INCREMENT de la tabla `compra`
@@ -533,7 +577,7 @@ ALTER TABLE `compra`
 -- AUTO_INCREMENT de la tabla `contrato`
 --
 ALTER TABLE `contrato`
-  MODIFY `CODCONTRATO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `CODCONTRATO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_compra`
@@ -545,13 +589,13 @@ ALTER TABLE `detalle_compra`
 -- AUTO_INCREMENT de la tabla `detalle_contrato`
 --
 ALTER TABLE `detalle_contrato`
-  MODIFY `CODDCONTRATO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `CODDCONTRATO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_venta`
 --
 ALTER TABLE `detalle_venta`
-  MODIFY `CODDVENTA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=114;
+  MODIFY `CODDVENTA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=136;
 
 --
 -- AUTO_INCREMENT de la tabla `encargado_sucursal`
@@ -587,7 +631,7 @@ ALTER TABLE `proveedor`
 -- AUTO_INCREMENT de la tabla `rollo_tela`
 --
 ALTER TABLE `rollo_tela`
-  MODIFY `CODROLLO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=399;
+  MODIFY `CODROLLO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=402;
 
 --
 -- AUTO_INCREMENT de la tabla `sucursal`
@@ -599,13 +643,13 @@ ALTER TABLE `sucursal`
 -- AUTO_INCREMENT de la tabla `tela`
 --
 ALTER TABLE `tela`
-  MODIFY `CODTELA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
+  MODIFY `CODTELA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 
 --
 -- AUTO_INCREMENT de la tabla `venta`
 --
 ALTER TABLE `venta`
-  MODIFY `CODVENTA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=114;
+  MODIFY `CODVENTA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=178;
 
 --
 -- Restricciones para tablas volcadas

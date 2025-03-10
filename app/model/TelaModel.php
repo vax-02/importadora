@@ -298,7 +298,29 @@ class TelaModel extends DB
             echo $e->getMessage();
         }
     }
+    public function getAllTelas()
+    {
+        try {
 
+            $temp = $this->CONEX->connect->prepare('SELECT
+                T.CODTELA, T.NOMBRE,
+                CASE 
+                    WHEN CALIDAD = 1 THEN \'1RA\'
+                    WHEN CALIDAD = 2 THEN \'2DA\'
+                    WHEN CALIDAD = 3 THEN \'3RA\'
+                    WHEN CALIDAD = 4 THEN \'4TA\'
+                END AS CALIDAD,
+                RT.CODCOLOR, RT.METROLLO,
+                M.DESCRIPCION AS MARCA, METROS, PRECIO, PRECIO_REAL
+                FROM Tela T, MARCA M, ROLLO_TELA RT
+                WHERE T.CODMARCA = M.CODMARCA AND T.CODTELA = RT.CODTELA
+                ');
+            $temp->execute();
+            return $temp->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
     public function getTela_idColor($id, $color)
     {
         try {
@@ -328,10 +350,15 @@ class TelaModel extends DB
                     SELECT METROLLO FROM ROLLO_TELA WHERE CODTELA = T.CODTELA AND
                     CODCOLOR = :color
                 ) as METROS,
-                 (
+                (
                     SELECT MROLLOCOMPLETO FROM ROLLO_TELA WHERE CODTELA = T.CODTELA AND
                     CODCOLOR = :color
-                ) as MROLLOCOMPLETO, 
+                ) as MROLLOCOMPLETO,
+                (
+                    SELECT PRECIOROLLO FROM ROLLO_TELA WHERE CODTELA = T.CODTELA AND
+                    CODCOLOR = :color
+                ) as PRECIOROLLO,
+                
                 PRECIO, PRECIO_REAL
                 FROM Tela T, MARCA M
                 WHERE T.CODMARCA = M.CODMARCA AND
@@ -606,6 +633,31 @@ ORDER BY
             return true;
         } catch (PDOException $e) {
             return false; 
+        }
+    }
+    public function get_by_color_and_cod($color,$cod){
+        try{
+            $temp = $this->CONEX->connect->prepare('SELECT MROLLOCOMPLETO FROM ROLLO_TELA WHERE CODTELA = :CODT AND
+            CODCOLOR = :CODC');
+            $temp->bindParam(':CODT',$cod);
+            $temp->bindParam(':CODC',$color);
+            $temp->execute();
+            return $temp->fetch(PDO::FETCH_ASSOC);
+        }catch(Exception $e){
+                return $e->getMessage();
+        }
+    }
+
+    public function find_stock($color,$cod){
+        try{
+            $temp = $this->CONEX->connect->prepare('SELECT NUMROLLOS,METROLLO,MROLLOCOMPLETO FROM ROLLO_TELA WHERE CODTELA = :CODT AND
+            CODCOLOR = :CODC');
+            $temp->bindParam(':CODT',$cod);
+            $temp->bindParam(':CODC',$color);
+            $temp->execute();
+            return $temp->fetch(PDO::FETCH_ASSOC);
+        }catch(Exception $e){
+                return $e->getMessage();
         }
     }
 
