@@ -10,7 +10,7 @@ include_once '../app/view/nav/superior.php';
           <a href="/<?php echo APP_NAME;?>/Proveedor" class="text-secondary">
           Proveedor
           </a>
-          > Lista
+          > Proveedor
         </h4>
     </div>  
     <div class="col-2 mb-3">
@@ -25,11 +25,11 @@ include_once '../app/view/nav/superior.php';
     <table class=" display table-hover text-center" id="table2">
       <thead>
         <tr>
-          <th scope="col">#</th>
-          <th scope="col">Nombre</th>
-          <th scope="col">Dirección</th>
-          <th scope="col">Celular</th>
-          <th scope="col">Opciones</th>
+          <th class="text-center">#</th>
+          <th class="text-center">Nombre</th>
+          <th class="text-center">Dirección</th>
+          <th class="text-center">Celular</th>
+          <th class="text-center">Opciones</th>
         </tr>
       </thead>
       <tbody>

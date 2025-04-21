@@ -236,6 +236,8 @@ function optionSucursal(){
             </li>
             <?php } ?>
 
+            <?php if ($_SESSION['rol'] < 3) { //Super y admin ?>
+
             <li <?php echo optionSelect("marca") ?  'class="option-select"':'' ?>>
                 <a href="/<?php echo APP_NAME; ?>/Marca">
                     <i class="fas fa-bookmark mx-3"></i>
@@ -243,14 +245,12 @@ function optionSucursal(){
                 </a>
             </li>
 
-            <?php if ($_SESSION['rol'] < 3) { //Super y admin ?>
             <li <?php echo optionSelect("compra") ?  'class="option-select"':'' ?>>
                 <a href="/<?php echo APP_NAME; ?>/Compra">
                     <i class="fas fa-bookmark mx-3"></i>
                     <span>Pedido</span>
                 </a>
             </li>
-            <?php } ?>
             <li <?php echo optionSelect("tela") ?  'class="option-select"':'' ?>>
                 <a href="/<?php echo APP_NAME; ?>/Tela">
                     <i class="fas fa-bookmark mx-3"></i>
@@ -258,13 +258,14 @@ function optionSucursal(){
                 </a>
 
             </li>
-
             <li <?php echo optionSelect("Productos") ?  'class="option-select"':'' ?>>
                 <a href="/<?php echo APP_NAME; ?>/Productos">
                     <i class="fas fa-bookmark mx-3"></i>
                     <span>Productos</span>
                 </a>
             </li>
+            <?php } ?>
+
         </ul>
     </nav>
     <div>

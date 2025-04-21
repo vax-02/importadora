@@ -1,19 +1,22 @@
-const datePersonal = document.getElementById("dateSucursal");
-const link = document.getElementById("sucursalToExcel");
+const InputWeek = document.getElementById("week");
+const InputMonth = document.getElementById("month");
+
+const datePersonal = document.getElementById("dateCompraClientes");
+const link = document.getElementById("compraClientesToExcel");
 const currentHref = new URL(link.href);
 
-datePersonal.addEventListener("change", async function () {
-  grafSucursalesForDate(this.value);
 
-  const dateParam = "date";
-  const newDate = this.value;
+datePersonal.addEventListener("change", async function () {
+  grafClientesForDate(this.value)
 
   currentHref.searchParams.set("type", 1);
-  currentHref.searchParams.set(dateParam, newDate);
+  currentHref.searchParams.set("date", this.value);
   link.href = currentHref.toString();
 });
+
 //Type de filtrado
 document.getElementById("typeFilter").addEventListener("input", function () {
+  console.log("here");
   switch (this.value) {
     case "1":
       datePersonal.classList.remove("d-none");
@@ -31,9 +34,6 @@ document.getElementById("typeFilter").addEventListener("input", function () {
       datePersonal.classList.add("d-none");
   }
 });
-
-const InputWeek = document.getElementById("week");
-const InputMonth = document.getElementById("month");
 
 InputMonth.addEventListener("change", function () {
   const [year, month] = this.value.split("-");
@@ -63,6 +63,7 @@ InputWeek.addEventListener("change", function () {
   const startDate = convertirFecha(formatDate(startOfWeek));
   const endDate = convertirFecha(formatDate(endOfWeek));
 
+  //
   grafForWeek(startDate, endDate);
 
   currentHref.searchParams.set("type", 2);
@@ -83,7 +84,7 @@ async function getForWeek(startDate, endDate) {
     params.append("inicio", startDate);
     params.append("fin", endDate);
     const response = await fetch(
-      `/ImportadoraFernandez/informe/informeForWeek?inicio=${startDate}&fin=${endDate}`,
+      `/ImportadoraFernandez/informe/informeClientesForWeek?inicio=${startDate}&fin=${endDate}`,
       {
         method: "GET",
         headers: {
@@ -160,7 +161,7 @@ async function grafForWeek(inicio, fin) {
 
   // Listado de nombres
 
-  const labelsContainer = document.getElementById("labelsContainer");
+  const labelsContainer = document.getElementById("labelsClientes");
   labelsContainer.innerHTML = "";
   data.labels.forEach((label, index) => {
     const listItem = document.createElement("div");
@@ -175,7 +176,7 @@ async function getForMonth(year, month) {
     params.append("year", year);
     params.append("month", month);
     const response = await fetch(
-      `/ImportadoraFernandez/informe/informeForMonth?year=${year}&month=${month}`,
+      `/ImportadoraFernandez/informe/informeClientesForMonth?year=${year}&month=${month}`,
       {
         method: "GET",
         headers: {
@@ -193,7 +194,7 @@ async function getForMonth(year, month) {
 
 async function grafForMonth(year, month) {
   info = await getForMonth(year, month);
-  console.log(info);
+  //console.log(info);
 
   if (myChart) {
     myChart.destroy();
@@ -252,7 +253,7 @@ async function grafForMonth(year, month) {
   });
 
   // Listado de nombres
-  const labelsContainer = document.getElementById("labelsContainer");
+  const labelsContainer = document.getElementById("labelsClientes");
   labelsContainer.innerHTML = "";
   data.labels.forEach((label, index) => {
     const listItem = document.createElement("div");

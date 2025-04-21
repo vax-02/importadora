@@ -1,4 +1,4 @@
-const ctxSucursal = document.getElementById("sucursales").getContext("2d");
+const ctxSucursal = document.getElementById("comprasCliente").getContext("2d");
 
 async function getDataForDate(method, date) {
     try {
@@ -20,9 +20,9 @@ async function getDataForDate(method, date) {
         return "ERROR another";
     }
 }
-async function grafSucursalesForDate(date) {
-    info = await getDataForDate("getSucursalesForDate", date);
-
+async function grafClientesForDate(date) {
+    info = await getDataForDate("getClientesForDate", date);
+    console.log(info);
     if (myChart) {
         myChart.destroy();
     }
@@ -80,7 +80,7 @@ async function grafSucursalesForDate(date) {
 
     // Listado de nombres
 
-    const labelsContainer = document.getElementById("labelsContainer");
+    const labelsContainer = document.getElementById("labelsClientes");
     labelsContainer.innerHTML = "";
     data.labels.forEach((label, index) => {
         const listItem = document.createElement("div");

@@ -54,7 +54,7 @@ include_once '../app/view/nav/superior.php';
                         </div>
                         <div class="col-sm-12 col-md-12 col-lg-3 col-xl-3">
                             <label for="">Usuario</label>
-                            <input type="text" class="form-control" name="usuario"
+                            <input type="text" class="form-control" name="usuario" minlength="3"
                                 value="<?php echo $datos['USUARIO'] ?>" required>
                         </div>
                         <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4">

@@ -12,7 +12,7 @@ include_once '../app/view/template/formModalCliente.php';
                 <div class="container">
                     <div class="row text-center">
                         <h1 class="modal-title fs-5" id="exampleModalLabel">
-                            Detalle de la tela
+                            DETALLE DE LA TELA
                         </h1>
                     </div>
                 </div>
@@ -23,9 +23,14 @@ include_once '../app/view/template/formModalCliente.php';
                     <div class="row text-center justify-content-center align-items-center">
                         <h4 class="bg-warning p-3">Tela no disponible</h4>
                         <h6>Tela disponible en: </h6>
+                        <label for="">Tienda:</label>
                         <input class="form-control" type="text" id="nombreSu" disabled>
+                        <label for="">Dirección:</label>
                         <input class="form form-control" type="text" id="direcSu" disabled>
+                        <label for="">Telefono:</label>
                         <input class="form form-control" type="text" id="telefSu" disabled>
+                        <label for="">Cantidad de Rollos disponibles:</label>
+                        <input class="form form-control" type="text" id="rollosDispoSu" disabled>
 
                     </div>
                 </div>
@@ -44,7 +49,7 @@ include_once '../app/view/template/formModalCliente.php';
                 <div class="container">
                     <div class="row text-center">
                         <h1 class="modal-title fs-5" id="exampleModalLabel">
-                            Detalle de la tela
+                            DETALLE DE LA TELA
                         </h1>
                     </div>
                 </div>
@@ -58,7 +63,8 @@ include_once '../app/view/template/formModalCliente.php';
                         <input type="hidden" id="color_tela">
 
                         <div class="col-12">
-                            <div class="alert alert-warning" id="msg-alert">El stock del producto es bajo</div>
+                            <div class="alert alert-danger d-none" id="msg-alert">SIN STOCK</div>
+                            <div class="alert alert-warning d-none" id="msg-warning">Poco Stock</div>
                         </div>
                         <div class="col-12">
                             <label for="">Nombre de la tela</label>
@@ -77,7 +83,9 @@ include_once '../app/view/template/formModalCliente.php';
                             <input type="text" id="numrollos" class="form form-control" disabled>
                         </div>
                         <div class="col-md-6 col-lg-6 col-sm-12">
-                            <label for="">Precio</label>
+                            <input type="hidden" id="precioTelaRef" class="form form-control">
+
+                            <label for="">Precio (Bs.)</label>
                             <input type="number" id="precioRollo" class="form form-control" readonly>
                         </div>
                         <div class="col-md-12 col-lg-6 col-sm-12">
@@ -162,7 +170,11 @@ include_once '../app/view/template/formModalCliente.php';
                                             <?php echo $row['MARCA'] ?>
                                         </td>
                                         <td>
-                                            <?php if ($row['CODSUCURSAL'] == $_SESSION['cod_sucursal']) { ?>
+                                            <?php if ($row['ROLLOS'] == 0) {?>
+                                            <button type="button" class="btn btn-danger" onclick="insertTela(this)">
+                                                <i class="fas fa-add"></i>
+                                            </button>
+                                            <?php }else if ($row['CODSUCURSAL'] == $_SESSION['cod_sucursal']) { ?>
                                             <button type="button" class="btn btn-success" onclick="insertTela(this)">
                                                 <i class="fas fa-add"></i>
                                             </button>
@@ -219,14 +231,17 @@ include_once '../app/view/template/formModalCliente.php';
                         <table class="table display table-hover text-center" id="table4">
                             <thead>
                                 <tr>
-                                    <th scope="col">Tela</th>
+                                    <th class="ocultar-columna">Tela</th>
                                     <th scope="col">Nombre</th>
-                                    <th scope="col">Cod. Color</th>
+                                    <th class="ocultar-columna">Cod. Color</th>
                                     <th scope="col">Color</th>
                                     <th scope="col">Precio</th>
                                     <th scope="col">Cantidad (m)</th>
                                     <th scope="col">Subtotal</th>
                                     <th scope="col">Opciones</th>
+                                    <th class="ocultar-columna">p. real</th>
+                                    <th class="ocultar-columna">subtotal real</th>
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -250,6 +265,7 @@ include_once '../app/view/template/formModalCliente.php';
                     </div>
                 </div>
 
+                <input type="hidden" name="" id="priceTotalReal">
                 <div class="form-section" id="seccion3">
                     <div class="row justify-content-center align-items-center">
                         <div class="col-10">
@@ -317,8 +333,9 @@ include_once '../app/view/template/formModalCliente.php';
                             </div>
                             <div class="col-5">
 
-                                <button id="btn-select-client" class="btn btn-success mt-5" type="button" onclick="verificarTelas()" disabled>
-                                    Siguiente <i class="fas fa-arrow-right" ></i>
+                                <button id="btn-select-client" class="btn btn-success mt-5" type="button"
+                                    onclick="verificarTelas()" disabled>
+                                    Siguiente <i class="fas fa-arrow-right"></i>
                                 </button>
                             </div>
                         </div>
@@ -338,7 +355,8 @@ include_once '../app/view/template/formModalCliente.php';
 
                         <div class="col-md-4 col-sm-12 col-lg-4">
                             <label for="">Descuento: <b id="val-descuento">0</b> %</label>
-                            <input id="descuento" class="form form-control" type="range" min="0" max="50" step="5" value="0">
+                            <input id="descuento" class="form form-control" type="range" min="0" max="20" step="1"
+                                value="0">
                             <input type="hidden" name="descuento" id="desc_input" value="">
                         </div>
                         <div class="col-md-4 col-sm-12 col-lg-4">

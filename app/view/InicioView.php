@@ -26,6 +26,14 @@ include_once '../app/view/nav/superior.php';
                 <?php echo ucwords($row['NOMBRE']) ?>
             </h2>
             <div class="row contenido pb-5">
+                <div class="col-3 text-right">
+                    <p><b>Sucursal:</b></p>
+                </div>
+                <div class="col-9">
+                    <p>
+                        <?php echo $row['SUCURSAL'] ?>
+                    </p>
+                </div>
                 <div class="col-3 text-right ">
                     <p><b>Marca:</b></p>
                 </div>
@@ -72,7 +80,14 @@ include_once '../app/view/nav/superior.php';
                                         <td>
                                             <div class="d-inline-block"><?php echo $rollo['METROLLO'] ?></div>
                                         </td>
-                                        <?php if($rollo['NUMROLLOS'] * $rollo['METROLLO'] < 10){ ?>
+                                        <?php
+                                        if($rollo['NUMROLLOS'] == 0 && $rollo['METROLLO'] == 0){ ?>
+
+                                        <td class="bg-danger bg-opacity-50">
+                                            Sin stock
+                                        </td>
+
+                                        <?php }else if($rollo['NUMROLLOS'] == 0 && $rollo['METROLLO'] < 10){ ?>
 
                                         <td class="bg-warning bg-opacity-50">
                                             Poco stock

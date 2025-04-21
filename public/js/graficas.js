@@ -198,7 +198,6 @@ async function grafTelas() {
 }
 
 grafTelas();
-
 //MARCAS
 async function grafMarcas() {
     const ctx = document.getElementById("telasColores");
@@ -241,3 +240,71 @@ async function grafMarcas() {
         },
     });
 }
+
+//COMRPAS DEL CLIENTE
+async function grafCompraClientes() {
+    info = await getData("getComprasClientes");
+    const ctxSucursales = document
+        .getElementById("comprasCliente")
+        .getContext("2d");
+    let labels = "",
+        ventas = "";
+    try {
+        labels = info.map((item) => item["NOMBRE"]);
+        ventas = info.map((item) => item["VENTAS"]);
+    } catch (e) {
+        console.log(e);
+    }
+
+    labels = labels.length > 0 ? labels : ["SIN", "COMPRAS"];
+
+    ventas = ventas.length > 0 ? ventas : [1, 1];
+    const data = {
+        labels: labels,
+        datasets: [
+            {
+                label: "# Ganancias generadas",
+                data: ventas,
+                backgroundColor: [
+                    "rgba(255, 206, 86, 0.2)",
+                    "rgba(75, 192, 192, 0.2)",
+                    "rgba(153, 102, 255, 0.2)",
+                    "rgba(255, 159, 64, 0.2)",
+                ],
+                borderColor: [
+                    "rgba(255, 206, 86, 1)",
+                    "rgba(75, 192, 192, 1)",
+                    "rgba(153, 102, 255, 1)",
+                    "rgba(255, 159, 64, 1)",
+                ],
+                borderWidth: 1,
+            },
+        ],
+    };
+
+    const options = {
+        responsive: true,
+        plugins: {
+            legend: {
+                display: false, // Ocultar la leyenda del gráfico
+            },
+        },
+    };
+
+    myChart = new Chart(ctxSucursales, {
+        type: "pie",
+        data: data,
+        options: options,
+    });
+
+    // Listado de nombres
+    const labelsContainer = document.getElementById("labelsClientes");
+
+    data.labels.forEach((label, index) => {
+        const listItem = document.createElement("div");
+        listItem.textContent = `${label}: ${data.datasets[0].data[index]}`;
+        labelsContainer.appendChild(listItem);
+    });
+}
+
+grafCompraClientes();

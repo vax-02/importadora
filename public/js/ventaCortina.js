@@ -41,9 +41,7 @@ function agregarDimension() {
     cellOption.innerHTML =
       '<button class="btn btn-danger" onclick="removeRow(this)"><i class="fas fa-trash"><i></button>';
 
-    alto.value = "";
-    ancho.value = "";
-    cant.value = "";
+    alto.value = ancho.value = cant.value = "";
   }
 }
 

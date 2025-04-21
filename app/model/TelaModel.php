@@ -24,10 +24,11 @@ class TelaModel extends DB
                     FROM ROLLO_TELA
                     WHERE CODTELA = T.CODTELA
                 ) AS ROLLOS,
-                M.DESCRIPCION AS MARCA, METROS, PRECIO, PRECIO_REAL
+                M.DESCRIPCION AS MARCA, METROS, PRECIO, PRECIO_REAL, S.NOMBRE AS SUCURSAL
                 
-                FROM Tela T, MARCA M
-                WHERE T.CODMARCA = M.CODMARCA
+                FROM Tela T, MARCA M, SUCURSAL S
+                WHERE T.CODMARCA = M.CODMARCA AND 
+                T.CODSUCURSAL = S.CODSUCURSAL
                 ');
             $temp->execute();
             return $temp->fetchAll(PDO::FETCH_ASSOC);
@@ -58,6 +59,36 @@ class TelaModel extends DB
                 FROM Tela T, MARCA M
                 WHERE T.CODMARCA = M.CODMARCA AND
                 T.CODSUCURSAL = :codsu');
+            $temp->bindParam(':codsu',$codSucu);
+            $temp->execute();
+            return $temp->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
+
+    public function getForSucursal($codSucu)
+    {
+        try {
+            $temp = $this->CONEX->connect->prepare('SELECT
+                T.CODTELA, T.NOMBRE,
+                CASE 
+                    WHEN CALIDAD = 1 THEN \'1RA\'
+                    WHEN CALIDAD = 2 THEN \'2DA\'
+                    WHEN CALIDAD = 3 THEN \'3RA\'
+                    WHEN CALIDAD = 4 THEN \'4TA\'
+                END AS CALIDAD,
+                (
+                    SELECT SUM(NUMROLLOS) 
+                    FROM ROLLO_TELA
+                    WHERE CODTELA = T.CODTELA
+                ) AS ROLLOS,
+                M.DESCRIPCION AS MARCA, METROS, PRECIO, PRECIO_REAL, RT.CODCOLOR, RT.METROLLO
+        
+                FROM Tela T, MARCA M, ROLLO_TELA RT
+                WHERE T.CODMARCA = M.CODMARCA AND
+                T.CODSUCURSAL = :codsu AND
+                T.CODTELA = RT.CODTELA');
             $temp->bindParam(':codsu',$codSucu);
             $temp->execute();
             return $temp->fetchAll(PDO::FETCH_ASSOC);
@@ -202,6 +233,59 @@ class TelaModel extends DB
         }
         return false;
     }
+    public function selectTelaForUpdateStock($data){
+        try{
+            $temp = $this->CONEX->connect->prepare('SELECT CODTELA FROM TELA 
+            WHERE NOMBRE = :nom AND
+            CALIDAD = :cali AND
+            CODMARCA = :codma AND
+            CODSUCURSAL = :codsu');
+
+            $temp->bindParam(':nom', $data['NOMBRE']);
+            $temp->bindParam(':cali', $data['CALIDAD']);
+            $temp->bindParam(':codma', $data['MARCA']);
+            $temp->bindParam(':codsu', $data['SUCURSAL']);
+            $temp->execute();
+            return $temp->fetch(PDO::FETCH_ASSOC);
+        }catch(PDOException $e){
+            
+        }
+    }
+    public function updateDeStock($data,$codtela)
+    {
+        try {
+            
+            $temp = $this->CONEX->connect->prepare('UPDATE TELA SET
+                CALIDAD = :cali, METROS = :metr, PRECIO = :prec, 
+                PRECIO_REAL  = :precr WHERE CODTELA = :codt');
+            $temp->bindParam(':cali', $data['CALIDAD']);
+            $temp->bindParam(':metr', $data['METROS']);
+            $temp->bindParam(':prec', $data['PRECIOMETRO']);
+            $temp->bindParam(':precr', $data['PRECIOMETROREAL']);
+            $temp->bindParam(':codt', $codtela);
+            $temp->execute();
+
+            $temp = $this->CONEX->connect->prepare('UPDATE ROLLO_TELA SET
+                NUMROLLOS = NUMROLLOS + :numrollos, METROLLO = :metrol, 
+                PRECIOROLLO = :prerl, PRECIOROLLOREAL = :prerlreal, 
+                MROLLOCOMPLETO = :mrollocom 
+                WHERE CODTELA = :codtela AND CODCOLOR = :codcolor');
+        
+            $temp->bindParam(':metrol', $data['METROS']);
+            $temp->bindParam(':prerl', $data['PROLLO']);
+            $temp->bindParam(':prerlreal', $data['PROLLOREAL']);
+            $temp->bindParam(':mrollocom', $data['METROS']);
+            $temp->bindParam(':codcolor', $data['COLOR']);
+            $temp->bindParam(':numrollos', $data['CANTIDAD']);
+           $temp->bindParam(':codtela', $codtela);
+            $temp->execute();
+
+            return true;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+        return false;
+    }
     public function checkStockOrNew($data){
         try {
             $temp = $this->CONEX->connect->prepare('SELECT * FROM TELA
@@ -237,7 +321,8 @@ class TelaModel extends DB
     public function getInfoRollos($id)
     {
         try {
-            $temp = $this->CONEX->connect->prepare('SELECT CODCOLOR,NUMROLLOS,PRECIOROLLOREAL,PRECIOROLLO, METROLLO FROM ROLLO_TELA
+            $temp = $this->CONEX->connect->prepare('SELECT CODCOLOR,NUMROLLOS,PRECIOROLLOREAL,PRECIOROLLO, METROLLO 
+            FROM ROLLO_TELA
             WHERE CODTELA = :CODT ');
             $temp->bindParam(':CODT', $id);
             $temp->execute();
@@ -357,8 +442,12 @@ class TelaModel extends DB
                 (
                     SELECT PRECIOROLLO FROM ROLLO_TELA WHERE CODTELA = T.CODTELA AND
                     CODCOLOR = :color
-                ) as PRECIOROLLO,
-                
+                ) as PRECIOROLLO, 
+                (
+                    SELECT PRECIOROLLOREAL FROM ROLLO_TELA WHERE CODTELA = T.CODTELA AND
+                    CODCOLOR = :color
+                ) as PRECIOROLLOREAL, 
+
                 PRECIO, PRECIO_REAL
                 FROM Tela T, MARCA M
                 WHERE T.CODMARCA = M.CODMARCA AND
@@ -414,6 +503,7 @@ class TelaModel extends DB
         }
         return false;
     }
+    
     public function getAll()
     {
         try {
@@ -428,11 +518,10 @@ class TelaModel extends DB
                             FROM ROLLO_TELA
                             WHERE CODTELA = T.CODTELA
                         ) AS ROLLOS, 
-                      
                         (SELECT DESCRIPCION FROM MARCA 
                         WHERE CODMARCA = T.CODMARCA )  AS MARCA,
                         
-                        METROS, PRECIO, PRECIO_REAL, CODCOLOR, CODSUCURSAL
+                        METROS, PRECIO, PRECIO_REAL, CODCOLOR, CODSUCURSAL, METROLLO, PRECIOROLLOREAL, PRECIOROLLO
                         FROM Tela T
                         RIGHT JOIN ROLLO_TELA RT 
                         ON T.CODTELA = RT.CODTELA

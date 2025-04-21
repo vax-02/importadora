@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 10-03-2025 a las 04:26:09
+-- Tiempo de generación: 28-03-2025 a las 07:09:12
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.2.0
 
@@ -40,7 +40,13 @@ CREATE TABLE `cliente` (
 --
 
 INSERT INTO `cliente` (`IDCLIENTE`, `RAZONSOCIAL`, `CI_NIT`, `CODTIPO`, `TELEFONO`) VALUES
-(114, 'JAVIER', 7888888, 'personal', 72345287);
+(114, 'JAVIER', 7888888, 'personal', 72345287),
+(115, 'TEST 2', 75454545, 'empresa', 78454848),
+(116, 'ABC', 7411111, 'empresa', 78454555),
+(117, 'Tarija', 78787878, 'empresa', 78788888),
+(118, 'example ', 4545555, 'personal', 78888888),
+(119, 'asd', 7777777, 'personal', 70000111),
+(120, 'new new', 123123123, 'personal', 78383888);
 
 -- --------------------------------------------------------
 
@@ -55,6 +61,16 @@ CREATE TABLE `compra` (
   `CODPROV` int(11) NOT NULL,
   `ESTADO` int(11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `compra`
+--
+
+INSERT INTO `compra` (`CODCOMPRA`, `FECHA`, `CODPERSONAL`, `CODPROV`, `ESTADO`) VALUES
+(43, '2025-03-14 01:52:14', 1, 9, 0),
+(44, '2025-03-14 01:53:27', 1, 9, 0),
+(45, '2025-03-17 02:01:14', 1, 9, 0),
+(46, '2025-03-17 02:25:32', 1, 9, 0);
 
 -- --------------------------------------------------------
 
@@ -76,8 +92,6 @@ CREATE TABLE `contrato` (
   `DESCRIPCION` text NOT NULL,
   `FECHA_INICIO` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `FECHA_ENTREGA` date DEFAULT NULL,
-  `C_INSTALACION` int(10) NOT NULL DEFAULT 0,
-  `C_TUBOS` int(10) NOT NULL DEFAULT 0,
   `ESTADO` int(11) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -85,16 +99,45 @@ CREATE TABLE `contrato` (
 -- Volcado de datos para la tabla `contrato`
 --
 
-INSERT INTO `contrato` (`CODCONTRATO`, `CODCLIENTE`, `CODEMPLEADO`, `SASTRE`, `CODTELA`, `CODCOLOR`, `METROS_TELA`, `COSTO_TOTAL_TELA`, `COSTO_SASTRE`, `FRUNCIDO`, `DESCRIPCION`, `FECHA_INICIO`, `FECHA_ENTREGA`, `C_INSTALACION`, `C_TUBOS`, `ESTADO`) VALUES
-(57, 114, 1, 'NO DEFINIDO', 65, '#00ff04', 20, 60, 17, '0.0', 'asd', '2025-03-10 02:08:28', '2025-12-12', 0, 0, 1),
-(58, 114, 1, 'NO DEFINIDO', 65, '#00ff04', 20, 60, 17, '0.0', 'asd', '2025-03-10 02:19:29', '2025-12-12', 0, 0, 1),
-(59, 114, 1, 'NO DEFINIDO', 65, '#00ff04', 20, 60, 17, '0.0', 'asd', '2025-03-10 02:28:04', '2025-12-12', 0, 0, 1),
-(60, 114, 1, 'NO DEFINIDO', 65, '#00ff04', 20, 60, 17, '0.0', 'asd', '2025-03-10 02:28:09', '2025-12-12', 0, 0, 1),
-(61, 114, 1, 'NO DEFINIDO', 65, '#00ff04', 20, 60, 17, '0.0', 'asd', '2025-03-10 02:28:23', '2025-12-12', 0, 0, 1),
-(62, 114, 1, 'NO DEFINIDO', 65, '#fa0000', 20, 60, 17, '0.0', 'sdasd', '2025-03-10 02:35:53', '2025-12-12', 0, 0, 1),
-(63, 114, 1, 'NO DEFINIDO', 65, '#fa0000', 20, 60, 17, '0.0', 'sdasd', '2025-03-10 02:36:39', '2025-12-12', 0, 0, 1),
-(66, 114, 1, 'NO DEFINIDO', 65, '#fa0000', 144, 432, 17, '0.0', 'dad', '2025-03-10 02:50:22', '2025-02-12', 0, 0, 1),
-(67, 114, 1, 'NO DEFINIDO', 65, '#fa0000', 14, 42, 17, '2.5', 'adsdasdas', '2025-03-10 03:21:44', '2025-12-12', 10, 2, 1);
+INSERT INTO `contrato` (`CODCONTRATO`, `CODCLIENTE`, `CODEMPLEADO`, `SASTRE`, `CODTELA`, `CODCOLOR`, `METROS_TELA`, `COSTO_TOTAL_TELA`, `COSTO_SASTRE`, `FRUNCIDO`, `DESCRIPCION`, `FECHA_INICIO`, `FECHA_ENTREGA`, `ESTADO`) VALUES
+(68, 116, 1, 'NO DEFINIDO', 65, '#fa0000', 10, 30, 17, '2.5', 'asdasda sda sd as da sd as', '2025-03-28 03:30:17', '2021-02-18', 1),
+(69, 114, 1, 'NO DEFINIDO', 65, '#000000', 10, 30, 17, '2.5', 'kkkklkpopp', '2025-03-28 05:34:34', '2000-02-18', 1),
+(70, 114, 1, 'NO DEFINIDO', 65, '#000000', 10, 30, 17, '2.5', 'kkkklkpopp', '2025-03-28 05:34:35', '2000-02-18', 1),
+(71, 115, 1, 'NO DEFINIDO', 65, '#000000', 10, 30, 17, '2.5', 'kjjjjjjjjjjjjjjjjjjjjjjjjj', '2025-03-28 05:54:44', '2012-12-12', 1),
+(72, 115, 1, 'NO DEFINIDO', 65, '#000000', 10, 30, 17, '2.5', 'kjjjjjjjjjjjjjjjjjjjjjjjjj', '2025-03-28 05:55:04', '2012-12-12', 1),
+(73, 118, 1, 'NO DEFINIDO', 65, '#000000', 10, 30, 17, '2.5', 'asdasdas', '2025-03-28 06:02:24', '1222-12-12', 1),
+(74, 117, 1, 'NO DEFINIDO', 65, '#000000', 10, 30, 17, '2.5', 'asdasd', '2025-03-28 06:03:36', '2021-12-12', 1),
+(75, 120, 1, 'NO DEFINIDO', 65, '#000000', 10, 30, 17, '2.5', 'sdasds', '2025-03-28 06:04:47', '2000-12-12', 1),
+(76, 114, 1, 'NO DEFINIDO', 65, '#000000', 10, 30, 17, '2.5', 'ASDASD', '2025-03-28 06:05:43', '2012-12-12', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `contrato_material_instalacion`
+--
+
+CREATE TABLE `contrato_material_instalacion` (
+  `id` int(11) NOT NULL,
+  `codcontrato` int(11) NOT NULL,
+  `ventanas` int(11) NOT NULL,
+  `metrosTubo` decimal(10,1) NOT NULL,
+  `c_tubo` decimal(10,1) NOT NULL,
+  `numHerraje` int(11) NOT NULL,
+  `c_herraje` decimal(10,1) NOT NULL,
+  `c_instalacion` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `contrato_material_instalacion`
+--
+
+INSERT INTO `contrato_material_instalacion` (`id`, `codcontrato`, `ventanas`, `metrosTubo`, `c_tubo`, `numHerraje`, `c_herraje`, `c_instalacion`) VALUES
+(1, 71, 2, '7.0', '49.0', 4, '28.0', 10),
+(2, 72, 2, '7.0', '49.0', 4, '28.0', 10),
+(3, 73, 2, '4.0', '8.0', 4, '8.0', 0),
+(4, 74, 2, '4.0', '44.0', 4, '40.0', 0),
+(5, 75, 2, '4.4', '0.0', 4, '0.0', 0),
+(6, 76, 2, '4.4', '0.0', 4, '0.0', 100);
 
 -- --------------------------------------------------------
 
@@ -112,6 +155,16 @@ CREATE TABLE `detalle_compra` (
   `cantidad` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `detalle_compra`
+--
+
+INSERT INTO `detalle_compra` (`coddcompra`, `codcompra`, `nombre`, `codcolor`, `codmarca`, `calidad`, `cantidad`) VALUES
+(60, 43, 'bonge', '#00fbff', 14, 1, 5),
+(61, 44, 'bonge', '#000000', 15, 4, 5),
+(62, 45, 'bonge', '#000000', 14, 1, 5),
+(63, 46, 'Tergal', '#000000', 14, 1, 5);
+
 -- --------------------------------------------------------
 
 --
@@ -126,6 +179,21 @@ CREATE TABLE `detalle_contrato` (
   `CANTIDAD` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `detalle_contrato`
+--
+
+INSERT INTO `detalle_contrato` (`CODDCONTRATO`, `CODCONTRATO`, `ALTO`, `ANCHO`, `CANTIDAD`) VALUES
+(49, 68, 2, 2, 2),
+(50, 69, 2, 2, 2),
+(51, 70, 2, 2, 2),
+(52, 71, 2, 2, 2),
+(53, 72, 2, 2, 2),
+(54, 73, 2, 2, 2),
+(55, 74, 2, 2, 2),
+(56, 75, 2, 2, 2),
+(57, 76, 2, 2, 2);
+
 -- --------------------------------------------------------
 
 --
@@ -137,9 +205,38 @@ CREATE TABLE `detalle_venta` (
   `CODVENTA` int(11) DEFAULT NULL,
   `CODTELA` int(11) DEFAULT NULL,
   `CODCOLOR` varchar(50) DEFAULT NULL,
-  `PRECIO` int(11) DEFAULT NULL,
+  `PRECIO` decimal(10,1) DEFAULT NULL,
   `CANTIDAD` float DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `detalle_venta`
+--
+
+INSERT INTO `detalle_venta` (`CODDVENTA`, `CODVENTA`, `CODTELA`, `CODCOLOR`, `PRECIO`, `CANTIDAD`) VALUES
+(155, 195, 69, '#000000', '1.5', 10),
+(156, 196, 65, '#00ff04', '3.0', 5),
+(157, 196, 69, '#000000', '1.5', 5),
+(158, 197, 70, '#000000', '3.0', 10),
+(159, 197, 70, '#ff0000', '3.0', 10),
+(160, 198, 72, '#ff0000', '250.0', 100),
+(161, 198, 72, '#04ff00', '250.0', 100),
+(162, 199, 71, '#ff0000', '330.0', 150),
+(163, 200, 69, '#000000', '1.5', 2),
+(164, 201, 69, '#000000', '110.0', 100),
+(165, 202, 69, '#000000', '1.5', 10),
+(166, 203, 73, '#ffea00', '220.0', 200),
+(167, 204, 69, '#000000', '1.5', 10),
+(168, 205, 65, '#fa0000', '3.0', 10),
+(169, 206, 65, '#00ff04', '240.0', 500),
+(170, 207, 65, '#000000', '3.0', 10),
+(171, 208, 65, '#000000', '3.0', 10),
+(172, 209, 65, '#000000', '3.0', 10),
+(173, 210, 65, '#000000', '3.0', 10),
+(174, 211, 65, '#000000', '3.0', 10),
+(175, 212, 65, '#000000', '3.0', 10),
+(176, 213, 65, '#000000', '3.0', 10),
+(177, 214, 65, '#000000', '3.0', 10);
 
 --
 -- Disparadores `detalle_venta`
@@ -306,7 +403,9 @@ CREATE TABLE `personal` (
 --
 
 INSERT INTO `personal` (`ID`, `NOMBRE`, `PATERNO`, `MATERNO`, `USUARIO`, `CONTRA`, `CELULAR`, `ESTADO`, `CODCARGO`, `CODSUCURSAL`, `FECHAINICIO`) VALUES
-(1, 'Administrador', '.', '.', 'admin', '827ccb0eea8a706c4c34a16891f84e7b', 71234567, 1, '1', 1, '2025-03-04 02:17:53');
+(1, 'Administrador', '.', '.', 'admin', '827ccb0eea8a706c4c34a16891f84e7b', 71234567, 1, '1', 1, '2025-03-14 00:05:13'),
+(46, 'TTTTT', 'TTT', 'TTT', 'seller', '25d55ad283aa400af464c76d713c07ad', 78888888, 1, '3', 1, '2025-03-19 04:37:00'),
+(47, 'asasd', 'asda', 'sdasd', '1', '102f3a72896214acbbcbc5bc69f6c22b', 78788888, 1, '3', 1, '2025-03-26 03:10:56');
 
 -- --------------------------------------------------------
 
@@ -324,7 +423,9 @@ CREATE TABLE `productos` (
 --
 
 INSERT INTO `productos` (`id`, `nombre`) VALUES
-(14, 'bonge');
+(14, 'bonge'),
+(15, 'Piel de leon'),
+(16, 'Tergal');
 
 -- --------------------------------------------------------
 
@@ -370,9 +471,19 @@ CREATE TABLE `rollo_tela` (
 --
 
 INSERT INTO `rollo_tela` (`CODROLLO`, `CODTELA`, `CODCOLOR`, `NUMROLLOS`, `METROLLO`, `MROLLOCOMPLETO`, `PRECIOROLLO`, `PRECIOROLLOREAL`, `PRECIO_METRO`, `PRECIO_METRO_REAL`) VALUES
-(399, 65, '#000000', 0, '0.0', 100, 240, 200, 0, 0),
-(400, 65, '#fa0000', 0, '92.0', 100, 240, 200, 0, 0),
-(401, 65, '#00ff04', 0, '80.0', 100, 240, 200, 0, 0);
+(399, 65, '#000000', 4, '20.0', 100, 240, 200, 0, 0),
+(400, 65, '#fa0000', 3, '100.0', 100, 240, 200, 0, 0),
+(401, 65, '#00ff04', 5, '100.0', 100, 240, 200, 0, 0),
+(402, 69, '#000000', 0, '79.5', 100, 110, 100, 0, 0),
+(403, 70, '#000000', 3, '80.0', 100, 220, 200, 0, 0),
+(404, 70, '#ff0000', 2, '90.0', 100, 220, 200, 0, 0),
+(405, 71, '#ff0000', 1, '50.0', 150, 330, 300, 0, 0),
+(406, 72, '#ff0000', 3, '100.0', 100, 250, 200, 0, 0),
+(407, 72, '#04ff00', 4, '100.0', 100, 250, 200, 0, 0),
+(408, 73, '#000000', 15, '100.0', 100, 220, 200, 0, 0),
+(409, 73, '#ff0095', 5, '100.0', 100, 220, 200, 0, 0),
+(410, 73, '#00ff2a', 5, '100.0', 100, 220, 200, 0, 0),
+(411, 73, '#ffea00', 3, '100.0', 100, 220, 200, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -394,7 +505,10 @@ CREATE TABLE `sucursal` (
 --
 
 INSERT INTO `sucursal` (`CODSUCURSAL`, `NOMBRE`, `DESCRIPCION`, `DIRECCION`, `TELEFONO`, `ENCARGADO`) VALUES
-(1, 'Mix COLOR', 'Variedad de todos los colores ', 'Calle simpre viva 123', 77777777, 1);
+(1, 'Mix COLOR', 'Variedad de todos los colores ', 'Calle simpre viva 123', 77777777, 1),
+(37, 'TIENDA TWO', 'ADASDASD', 'ASDASD ASD ASD AS', 72451020, 1),
+(38, 'STORE THREE', 'ASD', 'ASD', 7845, 1),
+(39, 'store foor', 'asd', 'asd', 45, 1);
 
 -- --------------------------------------------------------
 
@@ -418,7 +532,12 @@ CREATE TABLE `tela` (
 --
 
 INSERT INTO `tela` (`CODTELA`, `NOMBRE`, `CALIDAD`, `CODMARCA`, `METROS`, `PRECIO`, `PRECIO_REAL`, `CODSUCURSAL`) VALUES
-(65, 'bonge', '1', 14, 100, 3, 2, 1);
+(65, 'bonge', '1', 14, 100, 3, 2, 1),
+(69, 'bonge', '4', 15, 100, 1.5, 1, 1),
+(70, 'bonge', '1', 14, 100, 3, 2, 37),
+(71, 'bonge', '1', 14, 150, 3, 2, 38),
+(72, 'Piel de leon', '1', 15, 100, 3, 2, 39),
+(73, 'Tergal', '1', 14, 100, 2.2, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -435,6 +554,32 @@ CREATE TABLE `venta` (
   `DESCUENTO` int(11) NOT NULL DEFAULT 0,
   `TIPO_VENTA` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `venta`
+--
+
+INSERT INTO `venta` (`CODVENTA`, `IDPERSONAL`, `CODCLIENTE`, `FECHA_VENTA`, `CODSUCURSAL`, `DESCUENTO`, `TIPO_VENTA`) VALUES
+(195, 1, 114, '2025-03-15 03:57:30', 1, 0, 0),
+(196, 1, 114, '2025-03-16 03:58:04', 1, 0, 0),
+(197, 1, 114, '2025-03-15 03:00:00', 37, 0, 0),
+(198, 1, 114, '2025-03-16 04:01:13', 39, 5, 1),
+(199, 1, 114, '2025-03-16 04:08:33', 38, 0, 1),
+(200, 1, 114, '2025-03-17 02:34:07', 1, 9, 0),
+(201, 1, 114, '2025-03-19 02:27:34', 1, 0, 1),
+(202, 1, 117, '2025-03-19 02:46:36', 1, 0, 0),
+(203, 1, 118, '2025-03-19 02:47:09', 1, 0, 1),
+(204, 46, 114, '2025-03-18 04:37:28', 1, 0, 0),
+(205, 1, 116, '2025-03-22 04:41:23', 1, 0, 0),
+(206, 1, 120, '2025-03-28 03:47:59', 1, 0, 1),
+(207, 1, 114, '2025-03-28 05:34:35', 1, 0, 0),
+(208, 1, 114, '2025-03-28 05:34:36', 1, 0, 0),
+(209, 1, 115, '2025-03-28 05:54:44', 1, 0, 0),
+(210, 1, 115, '2025-03-28 05:55:04', 1, 0, 0),
+(211, 1, 118, '2025-03-28 06:02:24', 1, 0, 0),
+(212, 1, 117, '2025-03-28 06:03:37', 1, 0, 0),
+(213, 1, 120, '2025-03-28 06:04:47', 1, 0, 0),
+(214, 1, 114, '2025-03-28 06:05:44', 1, 0, 0);
 
 --
 -- Índices para tablas volcadas
@@ -463,6 +608,12 @@ ALTER TABLE `contrato`
   ADD KEY `CONTRATO_CLI` (`CODCLIENTE`),
   ADD KEY `CONTRATO_EMP` (`CODEMPLEADO`),
   ADD KEY `CONTRATO_TELA` (`CODTELA`);
+
+--
+-- Indices de la tabla `contrato_material_instalacion`
+--
+ALTER TABLE `contrato_material_instalacion`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `detalle_compra`
@@ -565,37 +716,43 @@ ALTER TABLE `venta`
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `IDCLIENTE` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=115;
+  MODIFY `IDCLIENTE` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=121;
 
 --
 -- AUTO_INCREMENT de la tabla `compra`
 --
 ALTER TABLE `compra`
-  MODIFY `CODCOMPRA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `CODCOMPRA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT de la tabla `contrato`
 --
 ALTER TABLE `contrato`
-  MODIFY `CODCONTRATO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
+  MODIFY `CODCONTRATO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
+
+--
+-- AUTO_INCREMENT de la tabla `contrato_material_instalacion`
+--
+ALTER TABLE `contrato_material_instalacion`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_compra`
 --
 ALTER TABLE `detalle_compra`
-  MODIFY `coddcompra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `coddcompra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_contrato`
 --
 ALTER TABLE `detalle_contrato`
-  MODIFY `CODDCONTRATO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `CODDCONTRATO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_venta`
 --
 ALTER TABLE `detalle_venta`
-  MODIFY `CODDVENTA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=136;
+  MODIFY `CODDVENTA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=178;
 
 --
 -- AUTO_INCREMENT de la tabla `encargado_sucursal`
@@ -613,13 +770,13 @@ ALTER TABLE `marca`
 -- AUTO_INCREMENT de la tabla `personal`
 --
 ALTER TABLE `personal`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedor`
@@ -631,25 +788,25 @@ ALTER TABLE `proveedor`
 -- AUTO_INCREMENT de la tabla `rollo_tela`
 --
 ALTER TABLE `rollo_tela`
-  MODIFY `CODROLLO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=402;
+  MODIFY `CODROLLO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=412;
 
 --
 -- AUTO_INCREMENT de la tabla `sucursal`
 --
 ALTER TABLE `sucursal`
-  MODIFY `CODSUCURSAL` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `CODSUCURSAL` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT de la tabla `tela`
 --
 ALTER TABLE `tela`
-  MODIFY `CODTELA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+  MODIFY `CODTELA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
 
 --
 -- AUTO_INCREMENT de la tabla `venta`
 --
 ALTER TABLE `venta`
-  MODIFY `CODVENTA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=178;
+  MODIFY `CODVENTA` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=215;
 
 --
 -- Restricciones para tablas volcadas

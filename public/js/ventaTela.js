@@ -29,10 +29,10 @@ function selectClienteTela(btn) {
   if (inputCliente.value == celdas[0].innerText.trim()) {
     inputCliente.value = "";
     btn.classList.remove("bg-success");
-    document.getElementById("btn-select-client").disabled = true
+    document.getElementById("btn-select-client").disabled = true;
   } else {
     inputCliente.value = celdas[0].innerText.trim();
-    document.getElementById("btn-select-client").disabled = false
+    document.getElementById("btn-select-client").disabled = false;
     btn.classList.toggle("bg-success");
   }
 }
@@ -67,7 +67,7 @@ function insertTela(btn) {
         marcTela.value = data.data["MARCA"];
         caliTela.value = data.data["CALIDAD"];
         precioTela.value = data.data["PRECIO"];
-        precioTelaRef.value = data.data["PRECIO"];
+        precioTelaRef.value = data.data["PRECIO_REAL"];
 
         stockMetros = data.data["METROS"];
         metrosCompleto = data.data["MROLLOCOMPLETO"];
@@ -82,7 +82,7 @@ function insertTela(btn) {
 
         //console.log(metrajeTela.value);
         //metrajeTela.value = 9;
-        if (parseInt(metrajeTela.value) < 10) {
+        if (parseInt(metrajeTela.value) < 50) {
           document.getElementById("msg-alert").classList.remove("d-none");
         } else {
           document.getElementById("msg-alert").classList.add("d-none");
@@ -115,6 +115,8 @@ function validateTwoInputs() {
 
 function infoSucursal(btn) {
   var row = btn.parentNode.parentNode;
+  var codtela = row.getElementsByTagName("td")[0].innerText.trim();
+  var codcolor = row.getElementsByTagName("td")[1].innerText.trim();
   var codSucursal = row.getElementsByTagName("td")[2].innerText.trim();
 
   fetch("/ImportadoraFernandez/Sucursal/getSucursal", {
@@ -122,7 +124,11 @@ function infoSucursal(btn) {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded", // URL-encoded form data
     },
-    body: new URLSearchParams({ id: codSucursal }),
+    body: new URLSearchParams({
+      id: codSucursal,
+      codtela: codtela,
+      codcolor: codcolor,
+    }),
   })
     .then((response) => response.json()) // Parse JSON response
     .then((data) => {
@@ -131,6 +137,7 @@ function infoSucursal(btn) {
         document.getElementById("nombreSu").value = data.data["NOMBRE"];
         document.getElementById("direcSu").value = data.data["DIRECCION"];
         document.getElementById("telefSu").value = data.data["TELEFONO"];
+        document.getElementById("metrosSu").value = data.data["METROLLO"];
       } else {
         console.log("ERROR");
       }
@@ -152,9 +159,16 @@ btnInsertTela.addEventListener("click", function () {
         ";'></div>",
       document.getElementById("precioTela").value,
       document.getElementById("metrTela").value,
-      parseFloat(document.getElementById("precioTela").value) *
-        parseFloat(document.getElementById("metrTela").value),
+      (
+        parseFloat(document.getElementById("precioTela").value) *
+        parseFloat(document.getElementById("metrTela").value)
+      ).toFixed(1),
       "<button type='button' onclick='eliminarFilaDesc(this)' class='btn btn-danger p-2'><i class='fas fa-trash'></i><button>",
+      document.getElementById("precioTelaRef").value,
+      (
+        parseFloat(document.getElementById("precioTelaRef").value) *
+        parseFloat(document.getElementById("metrTela").value)
+      ).toFixed(1),
     ])
     .draw(false);
 
@@ -173,9 +187,17 @@ function eliminarFilaDesc(btn) {
     parseFloat(rowPrice.cells[4].innerText) *
     parseFloat(rowPrice.cells[5].innerText);
 
+  const priceReal =
+    parseFloat(rowPrice.cells[8].innerText) *
+    parseFloat(rowPrice.cells[5].innerText);
+
   document.getElementById("priceTotal").innerText =
     parseFloat(document.getElementById("priceTotal").innerText) -
     parseFloat(price);
+
+  document.getElementById("priceTotalReal").value =
+    parseFloat(document.getElementById("priceTotalReal").value) -
+    parseFloat(priceReal);
 
   const row = btn.parentNode.parentNode;
   var table = $("#table4").DataTable();
@@ -224,29 +246,50 @@ function crearInput(nombre, i, cells, key) {
 
 function subtotal() {
   const total = document.getElementById("priceTotal");
+  const totalReal = document.getElementById("priceTotalReal");
+
   const table = document
     .getElementById("table4")
     .getElementsByTagName("tbody")[0];
 
   filas = table.rows.length;
-  sumtotal = 0;
+  sumtotalReal = sumtotal = 0;
   if (table.getElementsByTagName("tr")[0].innerText != "Sin resultados") {
     for (let i = 0; i < table.rows.length; i++) {
       const fila = table.rows[i];
       sumtotal +=
-        parseFloat(fila.cells[4].innerText) *
-        parseFloat(fila.cells[5].innerText);
+        parseFloat(fila.cells[4].textContent) *
+        parseFloat(fila.cells[5].textContent);
+
+      sumtotalReal +=
+        parseFloat(fila.cells[8].textContent) *
+        parseFloat(fila.cells[5].textContent);
     }
+    sumtotal = sumtotal.toFixed(1);
+    sumtotalReal = sumtotalReal.toFixed(1);
   }
+
   total.innerText = sumtotal;
+  totalReal.value = sumtotalReal;
   document.getElementById("costo_c").value = sumtotal;
   document.getElementById("total").value = sumtotal;
 
   if (sumtotal != 0) {
+    ajustarCarrito();
     siguienteSeccion();
   }
 }
 
+function ajustarCarrito() {
+  table = document.getElementById("table4");
+
+  for (let i = 1; i < table.rows.length; i++) {
+    table.rows[i].cells[0].classList.add("ocultar-columna")
+    table.rows[i].cells[2].classList.add("ocultar-columna")
+    table.rows[i].cells[8].classList.add("ocultar-columna")
+    table.rows[i].cells[9].classList.add("ocultar-columna")
+  }
+}
 function verificarTelas() {
   if (parseInt(document.getElementById("priceTotal").innerText) != 0) {
     siguienteSeccion();
@@ -257,25 +300,33 @@ function addFormModalClient() {
   console.log("hola");
 }
 
-
 document.getElementById("descuento").addEventListener("input", function () {
   desc = document.getElementById("val-descuento");
   document.getElementById("desc_input").value = this.value;
   desc.innerText = this.value;
 
-  document.getElementById("total").value = redondeo(
+  total = document.getElementById("total");
+  total.value = redondeo(
     parseFloat(
       document.getElementById("costo_c").value -
         parseFloat(document.getElementById("costo_c").value) *
           (parseInt(desc.innerText) / 100)
     )
   );
+
+  if (
+    parseFloat(total) <
+    parseFloat(document.getElementById("priceTotalReal").value)
+  ) {
+    document.getElementById("realizarVenta").disabled = true;
+  } else {
+    document.getElementById("realizarVenta").disabled = false;
+  }
 });
 
-
 function redondeo(val) {
-  if (parseFloat((parseFloat(val.toFixed(1)) % 1).toFixed(1)) == 0.1){
-    return parseInt(val.toFixed(1))
+  if (parseFloat((parseFloat(val.toFixed(1)) % 1).toFixed(1)) == 0.1) {
+    return parseInt(val.toFixed(1));
   }
-  return parseFloat(val.toFixed(1))
+  return parseFloat(val.toFixed(1));
 }

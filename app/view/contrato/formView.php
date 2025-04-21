@@ -12,7 +12,7 @@ include_once '../app/view/template/formModalCliente.php';
         <a href="/<?php echo APP_NAME; ?>/Contrato" class="text-secondary">
             Contrato
         </a>
-        > Cortina
+        > Cortina delgada
     </h4>
     <div class="row justify-content-center align-items-center  text-center" style="min-height: 70vh;">
         <div class="col-10">
@@ -28,13 +28,13 @@ include_once '../app/view/template/formModalCliente.php';
                                 <tr>
                                     <th class="ocultar-columna" scope="col">#</th>
                                     <th class="ocultar-columna" scope="col">cod</th>
-                                    <th scope="col">Nombre</th>
+                                    <th class="text-center">Nombre</th>
                                     <th class="ocultar-columna">cod_Color</th>
-                                    <th scope="col">Color</th>
-                                    <th scope="col">Calidad</th>
-                                    <th scope="col">Marca</th>
+                                    <th class="text-center">Color</th>
+                                    <th class="text-center">Calidad</th>
+                                    <th class="text-center">Marca</th>
                                     <th class="ocultar-columna">Precio</th>
-                                    <th scope="col">Opciones</th>
+                                    <th class="text-center">Opciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -121,7 +121,7 @@ include_once '../app/view/template/formModalCliente.php';
                 </div>
 
                 <div class="form-section" id="seccion2">
-                    <h4>Dimenciones de las ventanas</h4>
+                    <h4>Dimensiones de ventanas</h4>
                     <div class="row justify-content-center align-items-center">
                         <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
                             <label for="">Alto (m)</label>
@@ -192,7 +192,7 @@ include_once '../app/view/template/formModalCliente.php';
                         </div>
 
                         <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4">
-                            <label for="">Fruncido de cortina (cm.)</label>
+                            <label for="">Fruncido (cm.)</label>
                             <input id="fruncido" type="number" class="form-control" value="2.5" name="frunsido" min="0"
                                 step="0.5" required>
                             <small id="error_fruncido" class="form-text text-danger"></small>
@@ -221,27 +221,88 @@ include_once '../app/view/template/formModalCliente.php';
                         </div>
 
                         <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center m-3 p-3 bg-light">
-                            <label for="">¿Calcular costo de instalación?</label>
+                            <label for="">¿ Calcular costo de material de Instalación ?</label>
                             <input type="checkbox" id="check">
                         </div>
 
-                        <div id="install" class="d-none row p-4 bg-light">
-                            <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 text-center ">
-                                <label for="">Costo del tubo</label>
-                                <input type="number" name="costoTubo" id="costoTubo" class="form-control">
-                                <small id="error_costoTubo" class="form-text text-danger"></small>
-                            </div>
 
+
+                        <div id="install" class="d-none row p-4 bg-light justify-content-center">
                             <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 text-center">
-                                <label for="">Numero de tubos</label>
-                                <input type="number" name="numeroTubos" id="numeroTubos" class="form-control" readonly>
+                                <label for="">N° de Ventanas</label>
+                                <input type="number" name="numVentanas" id="numVentanas" min="1" class="form-control">
+                            </div>
+
+
+                            <div class="row my-2">
+                                <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 text-center">
+                                    <label for="">Medida del tubo (m.)</label>
+                                    <input type="number" name="medidaTubo" id="medidaTubo" step="0.1" class="form-control">
+                                    <small>Se añadio 20cm. por ventana</small>
+                                </div>
+
+                                <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 text-center ">
+                                    <label for="">Costo del tubo (Bs.)</label>
+                                    <input type="number" name="costoTubo" id="costoTubo" min="1" class="form-control">
+                                    <small id="error_costoTubo" class="form-text text-danger"></small>
+                                </div>
+
+                                <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 text-center ">
+                                    <label for="">Costo total (Bs.)</label>
+                                    <input type="number" name="costoTubo" id="costoTuboTotal" min="1"
+                                        class="form-control" value="0" readonly>
+                                </div>
+                            </div>
+
+                            <div class="row my-2">
+                                <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 text-center">
+                                    <label for="">N° de Herrajes</label>
+                                    <input type="number" name="numHerrajes" id="numHerrajes" min="1"
+                                        class="form-control" readonly>
+                                </div>
+
+                                <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 text-center">
+                                    <label for="">Costo del Herraje (Bs.)</label>
+                                    <input type="number" name="costoHerraje" id="costoHerraje" min="1"
+                                        class="form-control">
+                                </div>
+
+                                <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 text-center">
+                                    <label for="">Costo total (Bs.)</label>
+                                    <input type="number" name="costoHerraje" id="costoHerrajeTotal" min="1" value="0"
+                                        readonly class="form-control">
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row justify-content-center">
+                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center m-3 p-3 bg-light">
+                                <label for="">¿ Calcular mano de obra para la Instalación ?</label>
+                                <input type="checkbox" id="checkTwo">
+                            </div>
+
+                            <div id="manoDeObraInlacion" class="d-none row p-4 bg-light">
+                                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center">
+                                    <label for="">Mano de obra Instalación</label>
+                                    <input type="number" name="manoInsta" id="manoInsta" class="form-control">
+                                </div>
+
                             </div>
                         </div>
 
-                        <div class="col-sm-12 col-md-6 col-lg-3 col-xl-3 text-center bg-success bg-opacity-20 p-3">
-                            <label for="" class="text-white">Costo final del trabajo: Bs.</label>
-                            <input type="number" name="costoFinal" id="costoFinal" class="form-control" readonly>
+                        <div class="contianer m-5">
+                            <div class="row justify-content-center">
+                                <div
+                                    class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center bg-success bg-opacity-20 p-3">
+                                    <label for="" class="text-white">Costo final (Bs.)</label>
+                                    <input type="number" name="costoFinal" id="costoFinal" class="form-control"
+                                        readonly>
+                                </div>
+                            </div>
+
                         </div>
+
 
 
                         <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-3">

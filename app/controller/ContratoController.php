@@ -9,7 +9,8 @@ class Contrato extends Controller
 
     public function form()
     {
-        $tela = $this->model('Tela')->getAllTelas();
+        session_start();
+        $tela = $this->model('Tela')->getForSucursal($_SESSION['cod_sucursal']);
         $cliente = $this->model('Cliente')->view();
         $this->view('contrato/form', $tela, $cliente);
     }
@@ -40,8 +41,20 @@ class Contrato extends Controller
                 'DESCRI' => $_POST['descripcion'],
             ];
             $id_contrato = $model->create($data);
+  
+  
             if($_POST['costoTubo']!=''){
-              $model->instalacion($id_contrato,$_POST['costoTubo'],$_POST['numeroTubos']);  
+
+            $data = [
+                'ID' => $id_contrato,
+                'mTubo' => $_POST['medidaTubo'],
+                'numVentanas' => $_POST['numVentanas'],
+                'costoTubo' => $_POST['costoTubo'],
+                'numHerrajes' => $_POST['numHerrajes'],
+                'costoHerraje' => $_POST['costoHerraje'],
+                'manoInsta' => $_POST['manoInsta']
+            ];
+              $model->meterial_instalacion($data);  
             }
             
             if ($id_contrato != 0) {
@@ -97,8 +110,7 @@ class Contrato extends Controller
     public function detail()
     {
         $model = $this->model('Contrato');
-
-        $this->view('contrato/detail', $model->contrato($_GET['id']), $model->get_detalle_contrato($_GET['id']));
+        $this->view('contrato/detail', $model->contrato($_GET['id']), $model->get_detalle_contrato($_GET['id']), $model->get_material_instalacion($_GET['id']));
     }
     public function estado()
     {
@@ -115,6 +127,7 @@ class Contrato extends Controller
         $model = $this->model('Contrato');
         $contrato = $model->contrato($_GET['id']);
         $detalle = $model->get_detalle_contrato($_GET['id']);
+        $material_instalacion = $model->get_material_instalacion($_GET['id']);
 
 
         //print_r($contrato);
@@ -177,7 +190,7 @@ class Contrato extends Controller
 
 
         $pdf->Ln();
-        $pdf->Cell(0, 5, 'DETALLES DEL MATERIAL Y COSTO', 0, 1, 'C');
+        $pdf->Cell(0, 5, 'DETALLES DE LA TELA', 0, 1, 'C');
         $pdf->Cell(0, 5, 'Nombre: ' . $contrato['NOMBRE'], 0, 1, 'L');
 
         $pdf->Cell(0, 5, 'Marca: ' . $contrato['MARCA'], 0, 1, 'L');
@@ -185,38 +198,54 @@ class Contrato extends Controller
         
         
         $pdf->Cell(0, 5, 'Cantidad (m.): ' . $contrato['METROS_TELA'], 0, 1, 'L');
-        $pdf->Cell(0, 5, 'Fruncido: (cm.): ' . $contrato['FRUNCIDO'] , 0, 1, 'L');
+        
+        $pdf->Cell(0, 5, 'Costo de la tela: Bs. '.$contrato['COSTO_TOTAL_TELA'] , 0, 1, 'C');
+        
+
+        $pdf->Line(10, $pdf->GetY(), 200, $pdf->GetY()); // Línea horizontal
         $pdf->Ln();
-        if($contrato['C_INSTALACION'] == 0){
-            $pdf->Cell(0, 5, 'SIN INSTALACION' , 0, 1, 'C');
-        }else{
-            $pdf->Cell(0, 5, 'INSTALACION' , 0, 1, 'C');
-            $pdf->Ln();
-
-            $pdf->Cell(100, 5, 'Numero de tubos (m.): ' . $contrato['C_TUBOS'] , 0, 0, 'L');
-            $pdf->Cell(0, 5, 'Costo (Bs.): ' . $contrato['C_INSTALACION'] , 0, 1, 'L');
-
-        }
+        $pdf->Cell(0, 5, 'DETALLES', 0, 1, 'C');
         $pdf->Ln();
 
-        $costo_total = $contrato['FRUNCIDO']* $contrato['COSTO_SASTRE'] + $contrato['COSTO_TOTAL_TELA'] + $contrato['C_INSTALACION'] * $contrato['C_TUBOS'];
-        $pdf->Cell(0, 5, 'COSTO TOTAL: Bs. '.$costo_total , 0, 1, 'C');
+        
+        $pdf->Cell(0, 5, 'Fruncido: (cm.): ' . $contrato['FRUNCIDO'] , 0, 1, 'C');
+        $pdf->Cell(100, 5, 'Fecha inicio contratro: ' . $contrato['FECHA_INICIO'] , 0, 0, 'L');
+        $pdf->Cell(0, 5, 'Fecha fin contratro: ' . $contrato['FECHA_ENTREGA'] , 0, 1, 'L');
+        
+        $pdf->Ln();
 
+
+$pdf->Line(10, $pdf->GetY(), 200, $pdf->GetY()); // Línea horizontal
+$pdf->Cell(0, 5,  'MATERIAL E INSTALACION', 0, 1, 'C');
+if($material_instalacion['c_tubo'] != 0){
+$pdf->Cell(0, 5, '# Ventanas: ' . $material_instalacion['ventanas'], 0, 1, 'L');
+$pdf->Cell(0, 5, 'Tubo (m): ' . $material_instalacion['metrosTubo'], 0, 1, 'L');
+$pdf->Cell(0, 5, 'Costo Tubo (Bs.): ' . $material_instalacion['c_tubo'] * $material_instalacion['metrosTubo'] , 0, 1, 'L');
+$pdf->Cell(0, 5, '# Herraje: ' . $material_instalacion['numHerraje'] , 0, 1, 'L');
+$pdf->Cell(0, 5, 'Costo Herraje: ' . $material_instalacion['numHerraje'] * $material_instalacion['c_herraje'], 0, 1, 'L');
+}else{
+$pdf->Cell(0, 5, 'SIN MATERIAL DE INSTALACION', 0, 1, 'C');
+}
+if($material_instalacion['c_instalacion'] != 0){
+    $pdf->Cell(0, 5, 'COSTO INSTALACION: '.$material_instalacion['c_instalacion'], 0, 1, 'C');
+}else{
+$pdf->Cell(0, 5, 'SIN INSTALACION', 0, 1, 'C');
+}
+
+        //print_r($material_instalacion);
 
         $pdf->Line(10, $pdf->GetY(), 200, $pdf->GetY()); // Línea horizontal
 
 
-        $pdf->Ln();
-        $pdf->Cell(0, 5, 'Fecha de entrega y detalles', 0, 1, 'C');
-        $pdf->Ln();
+        
+        $pdf->Cell(0, 5, 'DIMENSIONES DE LAS CORTINAS', 0, 1, 'C');
 
-        $pdf->Cell(0, 5, 'El pedido debe de ser entregado el : ' . $contrato['FECHA_ENTREGA'], 0, 1, 'C');
 
         $pdf->Ln(2);
 
 
 
-        $header = array('ALTO', 'ANCHO', 'CANTIDAD');
+        $header = array('ALTO (m.)', 'ANCHO (m.)', 'CANTIDAD');
         $pdf->SetFillColor(200, 220, 255); // Color de fondo para los encabezados
         foreach ($header as $h) {
             $pdf->Cell($pdf->GetPageWidth() / 3 - 8, 10, $h, 1, 0, 'C', true);
@@ -240,7 +269,7 @@ class Contrato extends Controller
         $pdf->Cell($pdf->GetPageWidth() / 3 - 8, 10, $cantidadTotal, 1, 1, 'C');
 
         $pdf->Ln();
-        $pdf->Cell(0, 5, 'DETALLE', 0, 1, 'C');
+        $pdf->Cell(0, 5, 'DESCRIPCION', 0, 1, 'C');
 
         $pdf->MultiCell(0, 5, $contrato['DESCRIPCION']);
 
@@ -254,7 +283,7 @@ class Contrato extends Controller
         $pdf->Cell(0, 5, 'COBRO Y SALDO', 0, 1, 'C');
         $pdf->Ln();
 
-        $pdf->MultiCell(0, 5, 'Monto cancelado : Bs......................................... y Saldo: Bs........................................');
+        $pdf->MultiCell(0, 5, 'Monto total: '.$contrato['COSTO_TOTAL_TELA'] + $material_instalacion['c_tubo'] + $material_instalacion['c_herraje'] + $material_instalacion['c_instalacion'].' Bs. , monto cancelado : Bs......................................... y Saldo: Bs........................................');
 
 
 

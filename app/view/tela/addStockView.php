@@ -55,6 +55,7 @@ include_once '../app/view/nav/superior.php';
         <div class="col-10">
             <form action="/<?php echo APP_NAME; ?>/tela/addStockSave" method="POST" class="border-form" id="formTela">
                 <input type="hidden" name="id" value="<?php echo $_GET['id'] ?>">
+                <input type="hidden" name="tcolores" id="tmetros" value="<?php echo $datos['METROS']?>">
                 <div class="container-fluid">
                     <div class="form-section active" id="seccion1">
                         <h3 class="mb-3">Información de la tela</h3>
@@ -188,28 +189,41 @@ include_once '../app/view/nav/superior.php';
                     <div class="form-section" id="seccion3">
                         <h3 class="mb-3">Costo de la tela</h3>
                         <div class="row mt-3 justify-content-center align-items-center">
-                            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                            <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4">
                                 <label for="">Precio por ROLLO (real)</label>
-                                <input type="number" name="precioRolloReal" id="" class="form-control"
+                                <input type="number" name="precioRolloReal" id="precioRolloReal" class="form-control"
                                     value="<?php  echo $datos['rollos'][0]['PRECIOROLLOREAL']; ?>" required>
                             </div>
-                            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+
+                            <div class="col-sm-12 col-md-12 col-lg-2 col-xl-2">
+                                <label for="">Incremento: <b id="incrementRolloValue">0</b> %
+                                </label>
+                                <input type="range" id="incrementRollo" class="form-control" max="50" value="0">
+                            </div>
+
+                            <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4">
                                 <label for="">Precio por ROLLO (Venta)</label>
-                                <input type="number" name="precioRollo" id="" class="form-control"
+                                <input type="number" name="precioRollo" id="precioRollo" class="form-control"
                                     value="<?php  echo $datos['rollos'][0]['PRECIOROLLO']; ?>" required>
                             </div>
                         </div>
-
+<hr>
                         <div class="row mt-3 justify-content-center align-items-center">
-                            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                            <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4">
                                 <label for="">Precio por metro (real)</label>
                                 <input type="number" name="precioMetro" id="precioMetro" class="form-control"
-                                    value="<?php echo $datos['PRECIO_REAL'] ?>" required>
+                                    value="<?php echo $datos['PRECIO_REAL'] ?>" required readonly>
                             </div>
 
-                            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                            <div class="col-sm-12 col-md-12 col-lg-2 col-xl-2">
+                                <label for="">Incremento: <b id="incrementMetroValue">0</b> %
+                                </label>
+                                <input type="range" id="incrementMetro" class="form-control" max="50" value="0">
+                            </div>
+
+                            <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4">
                                 <label for="">Precio por metro (venta)</label>
-                                <input type="number" name="precioMetroVenta" id="precioMetroVenta" class="form-control"
+                                <input type="number" name="precioMetroVenta" step="0.1" id="precioMetroVenta" class="form-control"
                                     value="<?php echo $datos['PRECIO'] ?>" required>
                             </div>
                         </div>

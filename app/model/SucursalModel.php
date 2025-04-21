@@ -126,6 +126,29 @@ class SucursalModel extends DB
             echo $e->getMessage();
         }
     }
+    
+    public function detailSucursalAndRollo($id,$codtela,$codcolor)
+    {
+        try {
+
+            $temp = $this->CONEX->connect->prepare('SELECT 
+                S.NOMBRE, S.DIRECCION, S.TELEFONO,S.DESCRIPCION, RT.NUMROLLOS,RT.METROLLO,RT.MROLLOCOMPLETO
+                FROM SUCURSAL S, TELA T, ROLLO_TELA RT
+                WHERE S.CODSUCURSAL = :ID AND
+                T.CODSUCURSAL = :ID AND 
+                RT.CODTELA = T.CODTELA AND
+                T.CODTELA = :CODT AND
+                RT.CODCOLOR = :CODC');
+            $temp->bindParam(':ID', $id);
+            $temp->bindParam(':CODT', $codtela);
+            $temp->bindParam(':CODC', $codcolor);
+
+            $temp->execute();
+            return $temp->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
     public function personalSucursal($id)
     {
         try {
@@ -212,15 +235,25 @@ class SucursalModel extends DB
             date_default_timezone_set('America/La_Paz');
             $fechaActual = date('Y-m-d');
             $temp = $this->CONEX->connect->prepare('SELECT 
-            S.CODSUCURSAL, S.NOMBRE, COALESCE(SUM(dv.precio * dv.cantidad), 0) AS VENTAS
+            S.CODSUCURSAL, UPPER( S.NOMBRE) AS NOMBRE, ROUND(
+            SUM(
+                CASE 
+                	WHEN v.TIPO_VENTA = 0 THEN 
+                		dv.PRECIO * dv.CANTIDAD - ((dv.PRECIO * dv.CANTIDAD) * (V.DESCUENTO/100))
+
+                	WHEN v.TIPO_VENTA = 1 THEN dv.PRECIO * (dv.CANTIDAD / RT.MROLLOCOMPLETO) - ((dv.CANTIDAD / RT.MROLLOCOMPLETO) * (V.DESCUENTO/100))
+                	ELSE 0
+                END),1) as VENTAS
             FROM sucursal S
-            LEFT JOIN venta v ON S.codsucursal = v.codsucursal AND DATE(v.fecha_venta) = :fv
+            LEFT JOIN venta v ON S.codsucursal = v.codsucursal  AND DATE(v.fecha_venta) = :fv
             LEFT JOIN 
                 detalle_venta dv ON v.codventa = dv.codventa
+                left JOIN
+                rollo_tela rt on dv.CODTELA = rt.CODTELA and dv.CODCOLOR = rt.CODCOLOR
             GROUP BY 
                 S.CODSUCURSAL, S.NOMBRE
-            ORDER BY 
-            S.CODSUCURSAL;');
+            ORDER BY VENTAS DESC');
+
             $temp->bindParam(':fv',$fechaActual);
             $temp->execute();
             return $temp->fetchAll(PDO::FETCH_ASSOC);
@@ -228,21 +261,33 @@ class SucursalModel extends DB
             echo $e->getMessage();
         }
     }
+
+    
    
     public function getSucursalesForDate($date){
         try {
-            $date = trim($date,'"');
             $temp = $this->CONEX->connect->prepare('SELECT 
-            S.CODSUCURSAL, S.NOMBRE, SUM(dv.precio * dv.cantidad) AS VENTAS
-            FROM sucursal S
-            JOIN venta v ON v.codsucursal = S.codsucursal
-            JOIN detalle_venta dv ON v.codventa = dv.codventa
-            WHERE DATE(v.fecha_venta) = :fv
-            GROUP BY S.CODSUCURSAL');
-            
-            $temp->bindParam(':fv',$date );
-            $temp->execute();
+            S.CODSUCURSAL, UPPER( S.NOMBRE) AS NOMBRE, ROUND(
+            SUM(
+                CASE 
+                	WHEN v.TIPO_VENTA = 0 THEN 
+                		dv.PRECIO * dv.CANTIDAD - ((dv.PRECIO * dv.CANTIDAD) * (V.DESCUENTO/100))
 
+                	WHEN v.TIPO_VENTA = 1 THEN dv.PRECIO * (dv.CANTIDAD / RT.MROLLOCOMPLETO) - ((dv.CANTIDAD / RT.MROLLOCOMPLETO) * (V.DESCUENTO/100))
+                	ELSE 0
+                END),1) as VENTAS
+            FROM sucursal S
+            LEFT JOIN venta v ON S.codsucursal = v.codsucursal  AND DATE(v.fecha_venta) = :fv
+            LEFT JOIN 
+                detalle_venta dv ON v.codventa = dv.codventa
+                left JOIN
+                rollo_tela rt on dv.CODTELA = rt.CODTELA and dv.CODCOLOR = rt.CODCOLOR
+            GROUP BY 
+                S.CODSUCURSAL, S.NOMBRE
+            ORDER BY VENTAS DESC');
+
+            $temp->bindParam(':fv',$date);
+            $temp->execute();
             return $temp->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             echo $e->getMessage();
@@ -251,15 +296,25 @@ class SucursalModel extends DB
 
     public function getSucursalForMonth($year, $month){
         try {
-            //$date = trim($date,'"');
             $temp = $this->CONEX->connect->prepare('SELECT 
-            S.CODSUCURSAL, S.NOMBRE, SUM(dv.precio * dv.cantidad) AS VENTAS
+            S.CODSUCURSAL, UPPER( S.NOMBRE) AS NOMBRE, ROUND(
+            SUM(
+                CASE 
+                	WHEN v.TIPO_VENTA = 0 THEN 
+                		dv.PRECIO * dv.CANTIDAD - ((dv.PRECIO * dv.CANTIDAD) * (V.DESCUENTO/100))
+
+                	WHEN v.TIPO_VENTA = 1 THEN dv.PRECIO * (dv.CANTIDAD / RT.MROLLOCOMPLETO) - ((dv.CANTIDAD / RT.MROLLOCOMPLETO) * (V.DESCUENTO/100))
+                	ELSE 0
+                END),1) as VENTAS
             FROM sucursal S
-            JOIN venta v ON v.codsucursal = S.codsucursal
-            JOIN detalle_venta dv ON v.codventa = dv.codventa
-            WHERE year(v.fecha_venta) = :yearr and
-            month(v.fecha_venta) = :monthh GROUP BY 
-            S.CODSUCURSAL');
+            LEFT JOIN venta v ON S.codsucursal = v.codsucursal  AND YEAR(v.fecha_venta) = :yearr AND MONTH(v.fecha_venta) = :monthh
+            LEFT JOIN 
+                detalle_venta dv ON v.codventa = dv.codventa
+                left JOIN
+                rollo_tela rt on dv.CODTELA = rt.CODTELA and dv.CODCOLOR = rt.CODCOLOR
+            GROUP BY 
+                S.CODSUCURSAL, S.NOMBRE
+            ORDER BY VENTAS DESC');
             
             $temp->bindParam(':yearr',$year );
             $temp->bindParam(':monthh',$month);
@@ -278,13 +333,24 @@ class SucursalModel extends DB
             $fin = trim($fin,'"');
         
             $temp = $this->CONEX->connect->prepare('SELECT 
-            S.CODSUCURSAL, S.NOMBRE, SUM(dv.precio * dv.cantidad) AS VENTAS
+            S.CODSUCURSAL, UPPER( S.NOMBRE) AS NOMBRE, ROUND(
+            SUM(
+                CASE 
+                	WHEN v.TIPO_VENTA = 0 THEN 
+                		dv.PRECIO * dv.CANTIDAD - ((dv.PRECIO * dv.CANTIDAD) * (V.DESCUENTO/100))
+
+                	WHEN v.TIPO_VENTA = 1 THEN dv.PRECIO * (dv.CANTIDAD / RT.MROLLOCOMPLETO) - ((dv.CANTIDAD / RT.MROLLOCOMPLETO) * (V.DESCUENTO/100))
+                	ELSE 0
+                END),1) as VENTAS
             FROM sucursal S
-            JOIN venta v ON v.codsucursal = S.codsucursal
-            JOIN detalle_venta dv ON v.codventa = dv.codventa
-            WHERE DATE(v.fecha_venta) >= :inicio and
-            DATE(v.fecha_venta) <= :fin GROUP BY 
-            S.CODSUCURSAL');
+            LEFT JOIN venta v ON S.codsucursal = v.codsucursal  AND DATE(v.fecha_venta) >= :inicio AND DATE(v.fecha_venta) <= :fin
+            LEFT JOIN 
+                detalle_venta dv ON v.codventa = dv.codventa
+                left JOIN
+                rollo_tela rt on dv.CODTELA = rt.CODTELA and dv.CODCOLOR = rt.CODCOLOR
+            GROUP BY 
+                S.CODSUCURSAL, S.NOMBRE
+            ORDER BY VENTAS DESC');
             
             $temp->bindParam(':inicio',$inicio );
             $temp->bindParam(':fin',$fin);
@@ -300,10 +366,9 @@ class SucursalModel extends DB
         try {
             //$date = trim($date,'"');
             $temp = $this->CONEX->connect->prepare('SELECT 
-            S.CODSUCURSAL,S.NOMBRE, S.TELEFONO, CONCAT(P.NOMBRE,\' \',PATERNO, MATERNO) AS ENCARGADO
+            S.CODSUCURSAL,UPPER(S.NOMBRE) AS NOMBRE, S.TELEFONO, CONCAT(P.NOMBRE,\' \',PATERNO, MATERNO) AS ENCARGADO
             FROM SUCURSAL S, PERSONAL P
-            WHERE P.ID = S.ENCARGADO
-            ');
+            WHERE P.ID = S.ENCARGADO');
             
             $temp->execute();
 
@@ -312,22 +377,41 @@ class SucursalModel extends DB
             echo $e->getMessage();
         }
     }
-    public function getVentaEmpleados($id, $date){
+    public function detalleDeVentaDeEmpleados($id){
         try {
-            $temp = $this->CONEX->connect->prepare('SELECT  CONCAT(P.NOMBRE,\' \',PATERNO, \' \',MATERNO) AS NOMBRE,
-            DV.CANTIDAD, DV.PRECIO AS PRECIOV,T.PRECIO_REAL AS PRECIOR, 
-            T.NOMBRE AS TELA, M.DESCRIPCION AS MARCA, (DV.PRECIO  - RT.PRECIO_METRO_REAL) AS GANANCIA
-            FROM SUCURSAL S, PERSONAL P, VENTA V, DETALLE_VENTA DV, TELA T, MARCA M , ROLLO_TELA RT
-            WHERE P.CODSUCURSAL = S.CODSUCURSAL AND
-            P.ID = V.IDPERSONAL AND
+            $temp = $this->CONEX->connect->prepare('SELECT 
+            DV.CANTIDAD, DV.PRECIO AS PRECIOV,T.PRECIO_REAL AS PRECIOR, RT.PRECIOROLLOREAL  ,
+            T.NOMBRE AS TELA, M.DESCRIPCION AS MARCA, (DV.PRECIO  - RT.PRECIO_METRO_REAL) AS GANANCIA, RT.MROLLOCOMPLETO,
+            DV.CODCOLOR
+            FROM DETALLE_VENTA DV, TELA T, MARCA M , ROLLO_TELA RT
+            WHERE 
+            DV.CODVENTA = :CV AND
             T.CODTELA = DV.CODTELA AND
             M.CODMARCA = T.CODMARCA AND
-            DV.CODVENTA = V.CODVENTA AND
             RT.CODTELA = DV.CODTELA AND
-            V.CODSUCURSAL = :CSU AND
-            DATE(V.FECHA_VENTA) = :fv');
+            RT.CODCOLOR = DV.CODCOLOR');
+
+            $temp->bindParam(':CV',$id);
+            $temp->execute();
+
+            return $temp->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
+
+    public function getVentasEmpleados($id, $date){
+        try {
+
+            $temp = $this->CONEX->connect->prepare('SELECT  CONCAT(P.NOMBRE, " ", P.PATERNO, " ", P.MATERNO) AS NOMBRE,
+                TIME( V.FECHA_VENTA) AS HORA_VENTA, V.DESCUENTO, V.TIPO_VENTA, V.CODVENTA, V.CODCLIENTE
+                FROM VENTA V
+                INNER JOIN SUCURSAL S ON S.CODSUCURSAL = V.CODSUCURSAL
+                LEFT JOIN PERSONAL P ON V.IDPERSONAL = P.ID
+                WHERE V.CODSUCURSAL = :CSU
+                AND DATE(V.FECHA_VENTA) = :fv;');
             $temp->bindParam(':CSU',$id);
-            $temp->bindParam(':fv',$date);
+            $temp->bindParam(':fv', $date);
 
             $temp->execute();
 
@@ -336,6 +420,54 @@ class SucursalModel extends DB
             echo $e->getMessage();
         }
     }
+
+    public function getVentasEmpleadosForWeek($id, $inicio, $fin){
+        try {
+
+            $temp = $this->CONEX->connect->prepare('SELECT  CONCAT(P.NOMBRE, " ", P.PATERNO, " ", P.MATERNO) AS NOMBRE,
+                TIME( V.FECHA_VENTA) AS HORA_VENTA,V.FECHA_VENTA, V.DESCUENTO, V.TIPO_VENTA, V.CODVENTA, V.CODCLIENTE
+                FROM VENTA V
+                INNER JOIN SUCURSAL S ON S.CODSUCURSAL = V.CODSUCURSAL
+                LEFT JOIN PERSONAL P ON V.IDPERSONAL = P.ID
+                WHERE V.CODSUCURSAL = :CSU
+                AND DATE(V.FECHA_VENTA) >= :fi AND
+                DATE(V.FECHA_VENTA) <= :ff;');
+            $temp->bindParam(':CSU',$id);
+            $temp->bindParam(':fi', $inicio);
+            $temp->bindParam(':ff', $fin);
+
+
+            $temp->execute();
+
+            return $temp->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
+    public function getVentasEmpleadosForMonth($id, $year, $month){
+        try {
+
+            $temp = $this->CONEX->connect->prepare('SELECT  CONCAT(P.NOMBRE, " ", P.PATERNO, " ", P.MATERNO) AS NOMBRE,
+                TIME( V.FECHA_VENTA) AS HORA_VENTA ,V.FECHA_VENTA, V.DESCUENTO, V.TIPO_VENTA, V.CODVENTA, V.CODCLIENTE
+                FROM VENTA V
+                INNER JOIN SUCURSAL S ON S.CODSUCURSAL = V.CODSUCURSAL
+                LEFT JOIN PERSONAL P ON V.IDPERSONAL = P.ID
+                WHERE V.CODSUCURSAL = :CSU
+                AND YEAR(V.FECHA_VENTA) = :y AND
+                MONTH(V.FECHA_VENTA) = :m;');
+            $temp->bindParam(':CSU',$id);
+            $temp->bindParam(':y', $year);
+            $temp->bindParam(':m', $month);
+
+
+            $temp->execute();
+
+            return $temp->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
+
     public function getVentaAllEmpleados($id){
         try {
             $temp = $this->CONEX->connect->prepare('SELECT  CONCAT(P.NOMBRE,\' \',PATERNO, \' \',MATERNO) AS NOMBRE,

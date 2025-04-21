@@ -144,16 +144,18 @@ class Sucursal extends Controller
     {
         $model = $this->model('Sucursal');
 
-        $sucursal = $model->detail($_POST['id']);
+        $sucursal = $model->detailSucursalAndRollo($_POST['id'],$_POST['codtela'],$_POST['codcolor']);
 
-
+        $metraje = $sucursal['NUMROLLOS'] * $sucursal['MROLLOCOMPLETO'] + $sucursal['METROLLO'];
         $data = array(
             "status" => "success",
             "message" => "Data fetched successfully ",
             "data" => array(
                 "NOMBRE" => $sucursal['NOMBRE'],
                 "DIRECCION" => $sucursal['DIRECCION'],
-                "TELEFONO" => $sucursal['TELEFONO']
+                "TELEFONO" => $sucursal['TELEFONO'],
+                "NUMROLLOS" => $sucursal['NUMROLLOS'],
+                "METROLLO" => $metraje
             )
         );
 
@@ -161,8 +163,6 @@ class Sucursal extends Controller
 
         // Enviar la respuesta
         echo json_encode($data);
-
-
     }
     public function supervisar(){
         session_start();

@@ -168,7 +168,7 @@ include_once '../app/view/nav/superior.php';
                         </div>
                     </div>
                 </div>
-                
+
             </div>
         </div>
     </div>
@@ -180,9 +180,9 @@ include_once '../app/view/nav/superior.php';
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="container">
-                        <div class="row text-center">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">
-                                Detalle de la tela
+                        <div class="row text-center ">
+                            <h1 class="">
+                                Detalle de la Tela
                             </h1>
                         </div>
                     </div>
@@ -226,20 +226,48 @@ include_once '../app/view/nav/superior.php';
                                 <small class="p-2 text-danger " id="err_metros"></small>
                             </div>
 
-                            <div class="col-md-6 col-lg-6 col-sm-12">
-                                <label for="">Precio (rollo, compra)</label>
+                            <div class="col-12">
+                                <h5>Precio por Rollo</h5>
+                            </div>
+                            <div class="col-md-4 col-lg-4 col-sm-12">
+                                <label for="">Compra (Bs.)</label>
                                 <input type="number" id="precioTelaRollo" class="form form-control" required>
                                 <small class="p-2 text-danger " id="err_precioTelaRollo"></small>
                             </div>
 
-                            <div class="col-md-6 col-lg-6 col-sm-12">
-                                <label for="">Precio (rollo, venta)</label>
+
+                            <div class="col-md-4 col-sm-12 col-lg-4">
+                                <label for="">Incremento: <b id="val-incremento-rollo-compra">10</b> %</label>
+                                <input id="incremento-rollo-compra" class="form form-control" type="range" min="0" max="30" step="1"
+                                    value="10">
+                            </div>
+
+                            <div class="col-md-4 col-lg-4 col-sm-12">
+                                <label for="">Venta (Bs.)</label>
                                 <input type="number" id="precioTelaRolloVenta" class="form form-control" required>
                                 <small class="p-2 text-danger " id="err_precioTelaRolloVenta"></small>
                             </div>
 
-                            <div class="col-md-6 col-lg-6 col-sm-12">
-                                <label for="">Precio (metro)</label>
+
+                            <div class="col-12">
+                                <h5>Precio por metro</h5>
+                            </div>
+
+                            <div class="col-md-4 col-lg-4 col-sm-12">
+                                <label for="">Real (Bs.)</label>
+                                <input type="number" id="precioTelaMetroReal" class="form form-control" required readonly>
+                                <small class="p-2 text-danger " id="err_precioTelaMetroReal"></small>
+                            </div>
+
+                            
+                            <div class="col-md-4 col-sm-12 col-lg-4">
+                                <label for="">Incremento: <b id="val-incremento-metro-compra">10</b> %</label>
+                                <input id="incremento-metro-compra" class="form form-control" type="range" min="0" max="50" step="1"
+                                    value="10">
+                            </div>
+
+                            <div class="col-md-4 col-lg-4 col-sm-12">
+                                <label for="">Venta (Bs.)</label>
                                 <input type="number" id="precioTelaMetro" class="form form-control" required>
                                 <small class="p-2 text-danger " id="err_precioTelaMetro"></small>
                             </div>
@@ -252,7 +280,7 @@ include_once '../app/view/nav/superior.php';
                         onclick="modTable()">Confirmar</button>
                 </div>
                 <form action="/<?php echo APP_NAME?>/Compra/concretarPedido" method="POST" id="form-pedido">
-                    <input type="hidden" name="id" value="<?php  echo $_GET['id'] ?>"> 
+                    <input type="hidden" name="id" value="<?php  echo $_GET['id'] ?>">
                 </form>
             </div>
         </div>

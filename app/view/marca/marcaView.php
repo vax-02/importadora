@@ -10,7 +10,7 @@ include_once '../app/view/nav/superior.php';
         <a href="/<?php echo APP_NAME; ?>/Marca" class="text-secondary">
           Marca
         </a>
-        > Lista
+        > Marcas
       </h4>
     </div>
     <div class="col-2 mb-3">
@@ -26,9 +26,9 @@ include_once '../app/view/nav/superior.php';
     <table class="table display table-hover text-center" id="table2">
       <thead>
         <tr>
-          <th scope="col">#</th>
-          <th scope="col">Descripción</th>
-          <th scope="col">Opciones</th>
+          <th class="text-center">#</th>
+          <th class="text-center">Descripción</th>
+          <th class="text-center">Opciones</th>
         </tr>
       </thead>
       <tbody>
@@ -36,25 +36,25 @@ include_once '../app/view/nav/superior.php';
         $iter = 1;
         foreach ($datos as $row) {
           ?>
-          <tr>
-            <th scope="row">
-              <?php echo $iter++ ?>
-            </th>
-            <td>
-              <?php echo $row['DESCRIPCION'] ?>
-            </td>
-            <td>
-              <a href="/<?php echo APP_NAME . '/Marca/update?id=' . $row['CODMARCA'] ?>"
-                class="bg-success p-2 text-white mx-2 ">
-                <i class="fa-solid fa-pen"></i>
-              </a>
+        <tr>
+          <th scope="row">
+            <?php echo $iter++ ?>
+          </th>
+          <td>
+            <?php echo $row['DESCRIPCION'] ?>
+          </td>
+          <td>
+            <a href="/<?php echo APP_NAME . '/Marca/update?id=' . $row['CODMARCA'] ?>"
+              class="bg-success p-2 text-white mx-2 ">
+              <i class="fa-solid fa-pen"></i>
+            </a>
 
-              <a href="/<?php echo APP_NAME . '/Marca/delete?id=' . $row['CODMARCA'] ?>"
-                class="bg-danger p-2 text-white eliminar">
-                <i class="fa-solid fa-trash"></i>
-              </a>
-            </td>
-          </tr>
+            <a href="/<?php echo APP_NAME . '/Marca/delete?id=' . $row['CODMARCA'] ?>"
+              class="bg-danger p-2 text-white eliminar">
+              <i class="fa-solid fa-trash"></i>
+            </a>
+          </td>
+        </tr>
         <?php } ?>
 
       </tbody>

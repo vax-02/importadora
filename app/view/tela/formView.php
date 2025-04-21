@@ -53,47 +53,65 @@ include_once '../app/view/nav/superior.php';
 
                         <div class="row mt-3 justify-content-center align-items-center ">
                             <div class="container ">
+
+                                <div class="container mt-2">
+                                    <label><b>Metraje (m.)</b></label>
+                                    <div class="row justify-content-center">
+                                        <div class="col-md-6 col-lg-6 col-sm-12">
+                                            <label for="">Metros por rollo</label>
+                                            <input type="number" name="metros" id="metroRollo" class="form-control"
+                                                required>
+                                            <small id="error_metroRollo" class="form-text text-danger"></small>
+                                        </div>
+                                    </div>
+                                </div>
                                 <label><b>Precio por rollo</b></label>
-                                <div class="row">
-                                    <div class="col-md-6 col-lg-6 col-sm-12">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-4 col-lg-4 col-sm-12">
                                         <label for="">Ingr. precio real <b>(Bs.)</b> </label>
                                         <input type="number" class="form-control" name="pVentaRolloReal"
                                             id="precioRealRollo" min="0" required>
                                         <small id="error_precioRealRollo" class="form-text text-danger"></small>
                                     </div>
-                                    <div class="col-md-6 col-lg-6 col-sm-12">
+
+                                    <div class="col-md-3 col-lg-3 col-sm-12">
+                                        <label for="">Incremento del: <b id="val-incremento-rollo">10</b> %</label>
+                                        <input type="range" class="form-control" id="incremento-rollo" min="0" step="1" max="30" value="10">
+                                        <small id="error_precioRealRollo" class="form-text text-danger"></small>
+                                    </div>
+
+                                    <div class="col-md-4 col-lg-4 col-sm-12">
                                         <label for="">Ingr. precio de venta <b>(Bs.)</b></label>
                                         <input type="number" class="form-control" name="pVentaRollo"
-                                            id="precioVentaRollo" required>
+                                            id="precioVentaRollo" required >
                                         <small class="form-text text-danger"></small>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="container mt-2">
-                                <label><b>Metraje (m.)</b></label>
-                                <div class="row justify-content-center">
-                                    <div class="col-md-6 col-lg-6 col-sm-12">
-                                        <label for="">Metros por rollo</label>
-                                        <input type="number" name="metros" id="metroRollo" class="form-control">
-                                        <small id="error_metroRollo" class="form-text text-danger"></small>
-                                    </div>
-                                </div>
-                            </div>
 
-                            
+
                             <div class="container mt-2">
                                 <label><b>Precio metro</b></label>
-                                <div class="row">
-                                    <div class="col-md-6 col-lg-6 col-sm-12">
-                                        <label for="">Pecio real <b>(Bs.)</b></label>
-                                        <input type="number" name="precioMetroReal" id="precioMetroReal" class="form-control">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-4 col-lg-4 col-sm-12">
+                                        <label for="">Precio real <b>(Bs.)</b></label>
+                                        <input type="number" name="precioMetroReal" id="precioMetroReal"
+                                            class="form-control" readonly required>
                                         <small id="" class="form-text text-danger"></small>
                                     </div>
 
-                                    <div class="col-md-6 col-lg-6 col-sm-12">
+                                    
+                                    <div class="col-md-3 col-lg-3 col-sm-12">
+                                        <label for="">Incremento del: <b id="val-incremento-metro">10</b> %</label>
+                                        <input type="range" class="form-control" id="incremento-metro" min="0" step="1" max="50" value="10">
+                                    </div>
+
+
+                                    <div class="col-md-4 col-lg-4 col-sm-12">
                                         <label for="">Precio de venta <b>(Bs.)</b></label>
-                                        <input type="number" name="precioMetro" id="precioMetro" class="form-control">
+                                        <input type="number" name="precioMetro" id="precioMetro" class="form-control"
+                                            required >
                                         <small id="error_precioMetro" class="form-text text-muted"></small>
                                     </div>
                                 </div>
@@ -108,7 +126,7 @@ include_once '../app/view/nav/superior.php';
                                     <a href="/<?php echo APP_NAME . '/Tela' ?>"
                                         class="btn btn-primary mt-5 float-left">Volver</a>
                                     <button class="btn btn-success mt-5 float-right" type="button"
-                                        onclick="siguienteSeccion()" id="sigOne">
+                                        onclick="siguienteSeccion()" id="sigOne" >
                                         Siguiente <i class="fas fa-arrow-right"></i>
                                     </button>
                                 </div>
@@ -184,6 +202,7 @@ include_once '../app/view/nav/inferior.php';
 <script src="/<?php echo APP_NAME ?>/public/js/addRollo.js"></script>
 <script src="/<?php echo APP_NAME ?>/public/js/Validator.js"></script>
 <script src="/<?php echo APP_NAME ?>/public/js/ValidatorAddTela.js"></script>
+<script src="/<?php echo APP_NAME ?>/public/js/PreciosTela.js"></script>
 
 <?php
 

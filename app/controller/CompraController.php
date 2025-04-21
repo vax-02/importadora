@@ -115,7 +115,7 @@ class Compra extends Controller
         // Espacio para el título
         $pdf->Ln(2);
         $pdf->SetFont('Arial', 'B', 18);
-        $pdf->Cell(0, 10, 'Informe de compra de Telas', 0, 1, 'C');
+        $pdf->Cell(0, 10, 'INFORME DE COMPRA DE TELAS', 0, 1, 'C');
 
         $pdf->SetDrawColor(0, 0, 0); // Color negro
         $pdf->Line(10, $pdf->GetY(), 200, $pdf->GetY()); // Línea horizontal
@@ -201,11 +201,11 @@ class Compra extends Controller
     }
     public function concretarPedido() {
         $model = $this->model('Tela');
+        
         print_r($_POST);
+        session_start();
 
         
-        session_start();
-        echo '<br><br>';
         for($i = 0; $i<$_POST['tam']; $i++){
             
             $data = [
@@ -221,21 +221,17 @@ class Compra extends Controller
                 'COLOR' => $_POST[$i.'-codcolor'],
                 'CANTIDAD' => $_POST[$i.'-cantidad'],
             ];
-            if($model->checkStockOrNew($data)){
-                //nuevo
+            if($model->checkStockOrNew($data)){//NUEVO
                 $model->createDeStock($data);
-                $this->model('Compra')->changeStatus($_POST['id']);
-
-                header('Location: /'.APP_NAME.'/Compra');
             }else{
-                //agregar
-            }
-            
-            
+                //agregar a stock existene 
+                $codtela = $model->selectTelaForUpdateStock($data);
+                $model->updateDeStock($data,$codtela['CODTELA']);
+            }   
         }
-        print_r($data);
+        $this->model('Compra')->changeStatus($_POST['id']);
         
-        //header('Location: /'.APP_NAME.'/Compra');
+        header('Location: /'.APP_NAME.'/Compra');
     }
     
 }

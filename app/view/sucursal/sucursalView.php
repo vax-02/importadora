@@ -8,9 +8,10 @@ include_once '../app/view/nav/superior.php';
     <div class="col-10">
       <h4 class="text-left">
           <a href="/<?php echo APP_NAME;?>/Sucursal" class="text-secondary">
-          Sucursal
+          Sucursales
           </a>
-          > Lista
+          > 
+          Sucursales
         </h4>
     </div>  
     <div class="col-2 mb-3">
@@ -25,13 +26,13 @@ include_once '../app/view/nav/superior.php';
     <table class="table display table-hover text-center" id="table2">
       <thead>
         <tr>
-          <th scope="col">#</th>
-          <th scope="col">Nombre</th>
-          <th scope="col">Dirección</th>
-          <th scope="col">Telefono</th>
-          <th scope="col">Encargado</th>
-          <th scope="col">Detalle</th>
-          <th scope="col">Opciones</th>
+          <th class="text-center">#</th>
+          <th class="text-center">Nombre</th>
+          <th class="text-center">Dirección</th>
+          <th class="text-center">Telefono</th>
+          <th class="text-center">Encargado</th>
+          <th class="text-center">Detalle</th>
+          <th class="text-center">Opciones</th>
         </tr>
       </thead>
       <tbody>

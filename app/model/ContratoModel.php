@@ -113,7 +113,7 @@ class ContratoModel extends DB
         try {
 
             $temp = $this->CONEX->connect->prepare('SELECT 
-            CON.CODCONTRATO,SASTRE,CON.FRUNCIDO,C_INSTALACION, C_TUBOS, CLI.RAZONSOCIAL, CLI.TELEFONO, CLI.CODTIPO,
+            CON.CODCONTRATO,SASTRE,CON.FRUNCIDO, CLI.RAZONSOCIAL, CLI.TELEFONO, CLI.CODTIPO,
             CONCAT(P.NOMBRE, \' \', PATERNO, \' \',MATERNO) AS EMPLEADO, P.CELULAR,
             T.NOMBRE, CON.ESTADO,
             CASE
@@ -153,12 +153,35 @@ class ContratoModel extends DB
             echo $e->getMessage();
         }
     }
-    public function instalacion($id,$costo,$canti){
+    
+    public function get_material_instalacion($id)
+    {
         try {
-            $temp = $this->CONEX->connect->prepare('UPDATE FROM CONTRATO SET C_INSTALACION = :CI, C_TUBOS = :CT WHERE CODCONTRATO = :ID');
+
+            $temp = $this->CONEX->connect->prepare('SELECT * FROM CONTRATO_MATERIAL_INSTALACION 
+            WHERE CODCONTRATO = :ID');
             $temp->bindParam(':ID',$id);
-            $temp->bindParam(':CI',$costo);
-            $temp->bindParam(':CT',$canti);
+
+            $temp->execute();
+            return $temp->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
+    public function meterial_instalacion($data){
+        try {
+            $temp = $this->CONEX->connect->prepare('INSERT INTO 
+            CONTRATO_MATERIAL_INSTALACION (codcontrato, ventanas, metrosTubo, c_tubo, numHerraje, c_herraje, c_instalacion)
+            VALUES (:CC,:V,:M,:C,:N,:H,:CI)
+            ');
+            $temp->bindParam(':CC',$data['ID']);
+            $temp->bindParam(':V',$data['numVentanas']);
+            $temp->bindParam(':M',$data['mTubo']);
+            $temp->bindParam(':C',$data['costoTubo']);
+            $temp->bindParam(':N',$data['numHerrajes']);
+            $temp->bindParam(':H',$data['costoHerraje']);
+            $temp->bindParam(':CI',$data['manoInsta']);
+
 
             $temp->execute();
             return $temp->fetch(PDO::FETCH_ASSOC);

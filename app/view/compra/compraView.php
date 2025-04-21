@@ -11,7 +11,7 @@ include_once '../app/view/nav/superior.php';
                 <a href="/<?php echo APP_NAME; ?>/Compra" class="text-secondary">
                     Pedido
                 </a>
-                > Lista
+                > Pedidos
             </h4>
         </div>
         <div class="col-2 mb-3">
@@ -26,12 +26,12 @@ include_once '../app/view/nav/superior.php';
         <table class="table display table-hover text-center" id="table2">
             <thead>
                 <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Fecha / Hora</th>
-                    <th scope="col">Comprador</th>
-                    <th scope="col">Proveedor</th>
-                    <th scope="col">Detalle</th>
-                    <th scope="col">Opciones</th>
+                    <th class="text-center">#</th>
+                    <th class="text-center">Fecha / Hora</th>
+                    <th class="text-center">Comprador</th>
+                    <th class="text-center">Proveedor</th>
+                    <th class="text-center">Detalle</th>
+                    <th class="text-center">Opciones</th>
                 </tr>
             </thead>
             <tbody>

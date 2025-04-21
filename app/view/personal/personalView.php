@@ -5,20 +5,20 @@ include_once '../app/view/nav/superior.php';
 ?>
 <div class="container-fluid">
     <div class="row ml-1 my-3 title-option">
-        <div class="col-8">
+        <div class="col-lg-8 col-md-6 col-sm-10">
             <h4 class="text-left">
                 <a href="/<?php echo APP_NAME;?>/Personal" class="text-secondary">
                     Personal
                 </a>
-                > Lista
+                > Personal
             </h4>
         </div>
-        <div class="col-2 mb-3">
-            <a href="/<?php echo APP_NAME?>/Personal/formAdmin" class="btn btn-primary">
+
+        <div class="col-lg-4 col-md-6 col-sm-10 mb-3 text-right ">
+            <a href="/<?php echo APP_NAME?>/Personal/formAdmin" class="btn btn-success">
                 <i class="fas fa-plus"></i> Admin
             </a>
-        </div>
-        <div class="col-2 mb-3">
+
             <a href="/<?php echo APP_NAME?>/Personal/form" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Personal
             </a>
@@ -33,15 +33,15 @@ include_once '../app/view/nav/superior.php';
             <table class="table display table-hover text-center" id="table2">
                 <thead>
                     <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Usuario</th>
-                        <th scope="col">Cargo</th>
-                        <th scope="col">Sucursal</th>
-                        <th scope="col">Celular</th>
+                        <th class="text-center">#</th>
+                        <th class="text-center">Nombre</th>
+                        <th class="text-center">Usuario</th>
+                        <th class="text-center">Cargo</th>
+                        <th class="text-center">Sucursal</th>
+                        <th class="text-center">Celular</th>
 
-                        <th scope="col">Estado</th>
-                        <th scope="col" style="min-width: 150px;">Opciones</th>
+                        <th class="text-center">Estado</th>
+                        <th class="text-center" style="min-width: 150px;">Opciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -50,7 +50,6 @@ include_once '../app/view/nav/superior.php';
         foreach ($datos as $row) {
         ?>
                     <tr>
-
                         <th scope="row"> <?php echo $iter++ ?> </th>
                         <td> <?php echo $row['NOMBRE'] ?> </td>
                         <td> <?php echo $row['USUARIO'] ?> </td>
@@ -60,7 +59,7 @@ include_once '../app/view/nav/superior.php';
                         <td>
                             <?php echo $row['CELULAR']  ?>
                         </td>
-                        <td>
+                        <td class="text-center">
                             <?php if ($row['ESTADO']) { ?>
                             <a href="/<?php echo APP_NAME . '/Personal/lock?id=' . $row['ID'] ?>"
                                 class="bg-success p-2 text-white" data-toggle="tooltip" data-placement="bottom"

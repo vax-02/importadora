@@ -1,5 +1,5 @@
 <?php
-$title = 'Informe';
+$title = 'Informes';
 include_once '../app/view/template/header.php';
 include_once '../app/view/nav/superior.php';
 ?>
@@ -24,7 +24,7 @@ include_once '../app/view/nav/superior.php';
                 <div class="col-12 pb-4" style="height: 43vh;">
                     <div class="row">
                         <div class="col-12">
-                            <h5> <b> Telas mas vendidas (TOP 3) </b></h5>
+                            <h5> <b> TELAS MAS VENDIDAS (TOP 3) </b></h5>
                         </div>
                     </div>
                     <div class="row  pb-4 justify-content-center align-items-center" style="height: 100%;">
@@ -53,7 +53,7 @@ include_once '../app/view/nav/superior.php';
                     </div>
                 </div>
                 <div class="col-12 text-center " style="height: 43vh;">
-                    <h5 class="title-graf"> <b> Ventas realizadas por el personal </b>
+                    <h5 class="title-graf"> <b>VENTAS REALIZADAS POR EL PERSONAL </b>
                         <a href="/<?php echo APP_NAME ?>/informe/ventasPersonal" class="ml-5 info-graf">
                             <i class="fa-solid fa-circle-info text-light"></i>
                         </a>
@@ -80,7 +80,7 @@ include_once '../app/view/nav/superior.php';
         <div class="col-lg-6 col-md-12 col-sm-12">
             <div class="row">
                 <div class="col-12 text-center" style="43vh;">
-                    <h5 class="title-graf"> <b> Ventas por sucursal </b>
+                    <h5 class="title-graf"> <b>VENTAS POR SUCURSAL</b>
                         <a href="/<?php echo APP_NAME?>/informe/ventasSucursal" class="ml-5 info-graf">
                             <i class="fa-solid fa-circle-info text-light"></i>
                         </a>
@@ -89,6 +89,7 @@ include_once '../app/view/nav/superior.php';
                         <div class="col-6">
                             <canvas id="sucursales"></canvas>
                         </div>
+
                         <div class="col-6 text-left justify-content-center align-items-center d-flex">
                             <div id="labelsContainer"></div>
                         </div>
@@ -96,12 +97,31 @@ include_once '../app/view/nav/superior.php';
                 </div>
 
                 <div class="col-12 text-center" style="43vh;">
-                    <h5 class="title-graf"> <b> Venta de telas </b>
+                    <h5 class="title-graf"> <b> VENTA DE TELAS </b>
                         <a href="/<?php echo APP_NAME ?>/informe/ventaTelas" class="ml-5 info-graf">
                             <i class="fa-solid fa-circle-info text-light"></i>
                         </a>
                     </h5>
                     <canvas id="telasColores"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 text-center" style="43vh;">
+                <h5 class="title-graf"> <b> COMPRAS DE CLIENTES </b>
+                    <a href="/<?php echo APP_NAME ?>/informe/compras" class="ml-5 info-graf">
+                        <i class="fa-solid fa-circle-info text-light"></i>
+                    </a>
+                </h5>
+                <div class="row">
+                    <div class="col-6">
+                        <div>
+                            <canvas id="comprasCliente"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-6 text-left justify-content-center align-items-center d-flex">
+                        <div id="labelsClientes"></div>
+                    </div>
                 </div>
             </div>
         </div>

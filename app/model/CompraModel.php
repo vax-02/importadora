@@ -17,7 +17,7 @@ class CompraModel extends DB
 
             FROM COMPRA C, PERSONAL P, PROVEEDOR PR
             WHERE C.CODPERSONAL = P.ID AND
-            PR.CODPROV = C.CODPROV');
+            PR.CODPROV = C.CODPROV ORDER BY FECHA DESC');
 
             $temp->execute();
             return $temp->fetchAll(PDO::FETCH_ASSOC);

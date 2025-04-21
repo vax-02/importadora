@@ -11,16 +11,17 @@ include_once '../app/view/nav/superior.php';
                 <a href="/<?php echo APP_NAME; ?>/Contrato" class="text-secondary">
                     Cto. cortinas
                 </a>
-                > Lista
+                > Contratos
             </h4>
         </div>
-        <div class="col-4 mb-3 text-right">
+        <div class="col-4 mb-3 text-right ">
 
             <a href="/<?php echo APP_NAME ?>/Contrato/form" class="btn btn-success">
-                <i class="fas fa-plus"></i>
-
+                <i class="fas fa-plus"></i> Delgada
             </a>
         </div>
+        
+        
     </div>
 
     <?php if(isset($_SESSION['error_contrato'])){
@@ -40,12 +41,12 @@ include_once '../app/view/nav/superior.php';
         <table class="table display table-hover text-center" id="table2">
             <thead>
                 <tr>
-                    <th scope="col">#</th>
+                    <th class="text-center">#</th>
                     <th scope="col" class="ocultar-columna">Sastre</th>
-                    <th scope="col">Fecha Inicio</th>
-                    <th scope="col">Fecha Entrega</th>
-                    <th scope="col">Estato</th>
-                    <th scope="col">Detalle</th>
+                    <th class="text-center">Fecha Inicio</th>
+                    <th class="text-center">Fecha Entrega</th>
+                    <th class="text-center">Estato</th>
+                    <th class="text-center">Detalle</th>
                 </tr>
             </thead>
             <tbody>
@@ -93,7 +94,7 @@ include_once '../app/view/nav/superior.php';
 
                         <a href="/<?php echo APP_NAME . '/Contrato/detail?id=' . $row['CODCONTRATO'] ?>"
                             class="bg-secondary p-2 text-white mr-1">
-                            <i class="fa-solid fa-pen"></i>
+                            <i class="fas fa-print"></i>
                         </a>
                     </td>
                     <!--td>

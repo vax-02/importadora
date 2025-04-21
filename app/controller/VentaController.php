@@ -23,8 +23,8 @@ class Venta extends Controller
     public function form()
     {
         $telas = $this->model('Tela');
-        //print_r($telas->getAll());
         $clientes = $this->model('Cliente');
+        
         $this->view('Venta/form', $telas->getAll(), $clientes->view());
     }
     public function formRollos(){
@@ -137,8 +137,6 @@ class Venta extends Controller
 
         // Enviar la respuesta
         echo json_encode($data);
-
-
     }
     public function detail()
     {
@@ -371,21 +369,21 @@ class Venta extends Controller
             $cantidadTotal += $row['CANTIDAD'] * $row['PRECIO'];
         }
 
-        $pdf->SetX(147);
+        $pdf->SetX(133);
         $pdf->SetFillColor(200, 220, 255); // Color de fondo para los encabezados
 
 
-        $pdf->Cell(26, 8, 'TOTAL', 1, 0, 'C', true);
+        $pdf->Cell(40, 8, 'TOTAL SIN DESC.', 1, 0, 'C', true);
         $pdf->Cell(28, 8, $cantidadTotal, 1, 1, 'C');
         
-        $pdf->SetX(147);
+        $pdf->SetX(133);
         
-        $pdf->Cell(26, 8, 'DESC.', 1, 0, 'C', true);
+        $pdf->Cell(40, 8, 'DESCUENTO', 1, 0, 'C', true);
         $pdf->Cell(28, 8, $venta['DESCUENTO'].' %', 1, 1, 'C');
         
-        $pdf->SetX(147);
+        $pdf->SetX(133);
         
-        $pdf->Cell(26, 8, 'C. FINAL', 1, 0, 'C', true);
+        $pdf->Cell(40, 8, 'TOTAL CON DESC.', 1, 0, 'C', true);
         $pdf->Cell(28, 8, $cantidadTotal - $cantidadTotal * ($venta['DESCUENTO']/100), 1, 1, 'C');
         
         
